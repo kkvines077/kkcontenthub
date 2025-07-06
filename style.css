@@ -1,32 +1,36 @@
-/* style.css for KK Content Hub */
+/* style.css – Upgraded for KK Content Hub */
 
 body {
   margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Poppins', sans-serif;
   background-color: #f9f9f9;
-  color: #333;
+  color: #222;
+  line-height: 1.6;
 }
 
 header {
-  background-color: #0d1a26;
+  background: linear-gradient(to right, #007BFF, #00BFFF);
+  padding: 20px;
   color: white;
-  padding: 1rem 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  text-align: center;
 }
 
 .logo {
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-weight: bold;
 }
 
 nav ul {
-  list-style: none;
   display: flex;
-  gap: 1.5rem;
-  margin: 0;
+  justify-content: center;
+  list-style: none;
   padding: 0;
+  margin: 15px 0 0 0;
+  flex-wrap: wrap;
+}
+
+nav ul li {
+  margin: 0 15px;
 }
 
 nav ul li a {
@@ -37,64 +41,27 @@ nav ul li a {
 }
 
 nav ul li a:hover {
-  color: #00c896;
-}
-
-.hero {
-  text-align: center;
-  padding: 5rem 2rem;
-  background: linear-gradient(to right, #00c896, #007d7d);
-  color: white;
-}
-
-.hero h1 {
-  font-size: 3rem;
-  margin-bottom: 1rem;
-}
-
-.hero p {
-  font-size: 1.2rem;
-  margin-bottom: 2rem;
-}
-
-.cta {
-  background-color: white;
-  color: #007d7d;
-  padding: 0.8rem 1.5rem;
-  text-decoration: none;
-  font-weight: bold;
-  border-radius: 0.5rem;
-  transition: background 0.3s;
-}
-
-.cta:hover {
-  background-color: #f2f2f2;
+  color: #ffc107;
 }
 
 .features {
-  padding: 4rem 2rem;
-  background-color: #ffffff;
-  text-align: center;
+  padding: 40px 20px;
+  max-width: 900px;
+  margin: auto;
 }
 
 .features h2 {
-  font-size: 2rem;
-  margin-bottom: 2rem;
-}
-
-.cards {
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  flex-wrap: wrap;
+  text-align: center;
+  color: #007BFF;
+  margin-bottom: 30px;
 }
 
 .card {
-  background-color: #f2f2f2;
-  padding: 1.5rem;
-  border-radius: 1rem;
-  width: 300px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  background: white;
+  border-radius: 10px;
+  padding: 25px;
+  margin: 20px 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
   transition: transform 0.3s;
 }
 
@@ -102,47 +69,92 @@ nav ul li a:hover {
   transform: translateY(-5px);
 }
 
-.testimonials {
-  padding: 4rem 2rem;
-  background-color: #eef7f6;
-  text-align: center;
+.card h3 {
+  color: #333;
+  margin-bottom: 10px;
 }
 
-.testimonials h2 {
-  font-size: 2rem;
-  margin-bottom: 2rem;
-}
-
-blockquote {
-  font-style: italic;
-  margin: 1.5rem auto;
-  max-width: 600px;
+.card p, .card li {
   color: #444;
-  position: relative;
+}
+
+input, textarea, button {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+button, .cta {
+  background: #007BFF;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  text-align: center;
+  display: inline-block;
+  text-decoration: none;
+  transition: background 0.3s;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+}
+
+button:hover, .cta:hover {
+  background: #0056b3;
 }
 
 footer {
-  background-color: #0d1a26;
+  background-color: #222;
   color: white;
   text-align: center;
-  padding: 1rem 2rem;
+  padding: 20px;
   font-size: 0.9rem;
 }
 
-footer a {
-  color: #00c896;
-  text-decoration: none;
+@media (max-width: 600px) {
+  nav ul {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .features {
+    padding: 20px 10px;
+  }
 }
 
-@media (max-width: 768px) {
-  .cards {
-    flex-direction: column;
-    align-items: center;
-  }
-  .hero h1 {
-    font-size: 2.2rem;
-  }
-  .hero p {
-    font-size: 1rem;
-  }
+/* Visitor Counter (use public counter service in homepage) */
+.counter-box {
+  text-align: center;
+  margin-top: 30px;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+/* Cookie Consent Popup */
+#cookieConsent {
+  position: fixed;
+  bottom: 0;
+  background: #222;
+  color: white;
+  width: 100%;
+  padding: 15px;
+  text-align: center;
+  z-index: 1000;
+}
+
+#cookieConsent button {
+  margin-left: 10px;
+  padding: 10px 15px;
+  background: #00BFFF;
+  border: none;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+#cookieConsent button:hover {
+  background: #00aaff;
 }
