@@ -1,0 +1,119 @@
+<!-- ai-tools.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Tools - KK Content Hub</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div class="logo">KK Content Hub</div>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="ai-tools.html">AI Tools</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="payment.html">Payment</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="features">
+    <h2>AI Content Generators</h2>
+
+    <div class="card">
+      <h3>Blog Title Generator</h3>
+      <input type="text" id="blog-topic" placeholder="Enter a topic">
+      <button onclick="generateTitle()">Generate</button>
+      <p id="blog-result"></p>
+    </div>
+
+    <div class="card">
+      <h3>Social Media Caption Generator</h3>
+      <input type="text" id="social-topic" placeholder="Enter your product or idea">
+      <button onclick="generateCaption()">Generate</button>
+      <p id="caption-result"></p>
+    </div>
+
+    <div class="card">
+      <h3>Ad Headline Generator</h3>
+      <input type="text" id="ad-topic" placeholder="Enter keyword">
+      <button onclick="generateAd()">Generate</button>
+      <p id="ad-result"></p>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 KK Content Hub. All rights reserved.</p>
+  </footer>
+
+  <script>
+    function generateTitle() {
+      const topic = document.getElementById('blog-topic').value;
+      document.getElementById('blog-result').innerText = `Top 10 Tips for ${topic} You Can't Miss in 2025!`;
+    }
+
+    function generateCaption() {
+      const topic = document.getElementById('social-topic').value;
+      document.getElementById('caption-result').innerText = `Level up your life with ${topic}! 💥 #Motivation #Growth`;
+    }
+
+    function generateAd() {
+      const topic = document.getElementById('ad-topic').value;
+      document.getElementById('ad-result').innerText = `Boost Your Business with ${topic} – Try Now! 🚀`;
+    }
+  </script>
+</body>
+</html>
+
+<!-- Updated contact.html -->
+<!-- Add WhatsApp + Google Sheets Integration -->
+<!-- Replace your current contact.html content with this -->
+
+<!-- payment.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payments - KK Content Hub</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div class="logo">KK Content Hub</div>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="payment.html">Payment</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="features">
+    <h2>Make a Payment</h2>
+
+    <div class="card">
+      <h3>Pay via UPI</h3>
+      <p>Scan this QR or use UPI ID below:</p>
+      <img src="images/upi-qr.png" alt="UPI QR Code" width="200" />
+      <p><strong>UPI ID:</strong> 9642903578@jio</p>
+    </div>
+
+    <div class="card">
+      <h3>Pay via Razorpay</h3>
+      <p>Click the button below to pay securely via Razorpay:</p>
+      <a href="https://razorpay.me/@chorbazar3752" target="_blank" class="cta">Pay with Razorpay</a>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 KK Content Hub. All rights reserved.</p>
+  </footer>
+</body>
+</html>
