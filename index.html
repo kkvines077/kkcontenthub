@@ -13,6 +13,27 @@
 <body>
   <header>
     <div class="logo">KK Content Hub</div>
+    <div id="cookieConsent">
+  📢 This site uses cookies and Google Analytics to track visitors anonymously. 
+  <button onclick="acceptCookies()">Accept & Continue</button>
+</div>
+
+<script>
+  function acceptCookies() {
+    document.getElementById("cookieConsent").style.display = "none";
+    // Google Analytics will now load
+    let gtag = document.createElement('script');
+    gtag.setAttribute('async', '');
+    gtag.src = 'https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX'; // Replace with your real ID
+    document.head.appendChild(gtag);
+
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){ dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-XXXXXXXXXX'); // Replace again
+  }
+</script>
+    
     <nav>
       <ul>
         <li><a href="index.html">Home</a></li>
