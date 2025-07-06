@@ -1,10 +1,11 @@
+<!-- contact.html with Google Sheets + WhatsApp integration -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Contact Us - KK Content Hub</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header>
@@ -13,19 +14,33 @@
       <ul>
         <li><a href="index.html">Home</a></li>
         <li><a href="services.html">Services</a></li>
+        <li><a href="ai-tools.html">AI Tools</a></li>
+        <li><a href="portfolio.html">Portfolio</a></li>
         <li><a href="contact.html">Contact</a></li>
+        <li><a href="payment.html">Payment</a></li>
       </ul>
     </nav>
   </header>
 
   <section class="features">
     <h2>Contact Us</h2>
-    <form action="mailto:kkcontenthub@example.com" method="POST" enctype="text/plain" style="max-width:600px; margin:auto;">
-      <input type="text" name="name" placeholder="Your Name" required style="width:100%;padding:10px;margin:10px 0;" />
-      <input type="email" name="email" placeholder="Your Email" required style="width:100%;padding:10px;margin:10px 0;" />
-      <textarea name="message" rows="6" placeholder="Your Message" required style="width:100%;padding:10px;margin:10px 0;"></textarea>
-      <button type="submit" style="background:#00c896;color:#fff;padding:10px 20px;border:none;border-radius:5px;cursor:pointer;">Send Message</button>
-    </form>
+
+    <div class="card">
+      <h3>📩 Send a Message (Google Sheets)</h3>
+      <form action="https://docs.google.com/forms/d/e/1FAIpQLSeZ8VY-sample-form-link/formResponse" method="POST" target="_blank">
+        <input type="text" name="entry.1111111111" placeholder="Your Name" required style="width:100%;padding:10px;margin:10px 0;">
+        <input type="email" name="entry.2222222222" placeholder="Your Email" required style="width:100%;padding:10px;margin:10px 0;">
+        <textarea name="entry.3333333333" placeholder="Your Message" rows="5" required style="width:100%;padding:10px;margin:10px 0;"></textarea>
+        <button type="submit" class="cta">Send to Google Sheet</button>
+      </form>
+      <p style="font-size: 0.8rem;">* This message will be stored privately in our database.</p>
+    </div>
+
+    <div class="card">
+      <h3>💬 Direct WhatsApp Chat</h3>
+      <p>Prefer to chat directly? Just click below:</p>
+      <a href="https://wa.me/919642903578?text=Hi%20KK%20Content%20Hub%2C%20I%20am%20interested%20in%20your%20content%20writing%20services" target="_blank" class="cta">Chat on WhatsApp</a>
+    </div>
   </section>
 
   <footer>
