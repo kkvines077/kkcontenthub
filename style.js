@@ -1,21 +1,39 @@
-// script.js - Adds simple fade-in animation
+const products = [
+  {
+    id: 1,
+    name: "Wireless Headphones",
+    price: 1999,
+    image: "assets/images/headphones.jpg"
+  },
+  {
+    id: 2,
+    name: "Smart Watch",
+    price: 2499,
+    image: "assets/images/watch.jpg"
+  },
+  {
+    id: 3,
+    name: "Bluetooth Speaker",
+    price: 1499,
+    image: "assets/images/speaker.jpg"
+  }
+];
 
-document.addEventListener("DOMContentLoaded", () => {
-  const elements = document.querySelectorAll(".card, .hero, .testimonials");
-  elements.forEach(el => {
-    el.style.opacity = 0;
-    el.style.transition = "opacity 1s ease-in-out";
+window.onload = () => {
+  const list = document.getElementById("product-list");
+  products.forEach(p => {
+    const div = document.createElement("div");
+    div.className = "product-card";
+    div.innerHTML = `
+      <img src="${p.image}" alt="${p.name}" width="150"><br>
+      <strong>${p.name}</strong><br>
+      ₹${p.price}<br>
+      <button onclick="addToCart(${p.id})">Add to Cart</button>
+    `;
+    list.appendChild(div);
   });
+};
 
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.style.opacity = 1;
-      }
-    });
-  }, {
-    threshold: 0.1
-  });
-
-  elements.forEach(el => observer.observe(el));
-});
+function addToCart(id) {
+  alert("Product " + id + " added to cart!");
+}
