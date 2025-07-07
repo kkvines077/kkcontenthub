@@ -38,7 +38,7 @@
     <div id="profile-info"></div>
     <div id="cart-items"></div>
     <h3>Total: ₹<span id="total">0</span></h3>
-    <button onclick="checkout()" class="btn">💳 Proceed to Pay</button>
+    <button id="payBtn" class="btn">💳 Proceed to Pay</button>
     <div id="loading" class="loading">Processing your order...</div>
   </main>
 
@@ -50,7 +50,7 @@
       window.location.href = "login.html";
     }
 
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
     const productMap = {
       1: { name: "Wireless Headphones", price: 1999 },
       2: { name: "Smart Watch", price: 2499 },
@@ -110,17 +110,24 @@
       })
         .then(res => res.json())
         .then(data => {
-          alert("✅ Payment successful! Order ID: " + data.order.id);
-          localStorage.setItem("cart", JSON.stringify([]));
-          window.location.href = "order.html";
+          if (data.order && data.order.id) {
+            alert("✅ Payment successful! Order ID: " + data.order.id);
+            localStorage.setItem("cart", JSON.stringify([]));
+            window.location.href = "order.html";
+          } else {
+            alert("⚠️ Something went wrong. Order not completed.");
+          }
         })
-        .catch(() => {
+        .catch((err) => {
+          console.error("Order Error:", err);
           alert("❌ Server error. Payment failed.");
         })
         .finally(() => {
           document.getElementById("loading").style.display = "none";
         });
     }
+
+    document.getElementById("payBtn").addEventListener("click", checkout);
 
     const profile = document.getElementById("profile-info");
     profile.innerHTML = `
