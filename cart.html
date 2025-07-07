@@ -1,3 +1,4 @@
+<!-- FILE: cart.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,7 +12,7 @@
 
   <header>
     <div class="logo">MyStore</div>
-    <a href="index.html" class="cart">🏠 Home</a>
+    <div id="nav-links" class="header-links"></div>
   </header>
 
   <main>
@@ -21,11 +22,11 @@
     <button onclick="checkout()" class="btn">💳 Proceed to Pay</button>
   </main>
 
+  <script src="login.js"></script>
   <script>
-    // Check login
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user) {
-      alert("⚠️ Please login to continue");
+      alert("Please login to continue");
       window.location.href = "login.html";
     }
 
@@ -48,20 +49,15 @@
     document.getElementById("total").innerText = total;
 
     function checkout() {
-      if (total === 0) {
-        alert("Your cart is empty!");
-        return;
-      }
-
       const options = {
-        key: "rzp_test_xxxxxxxxxxxxxx", // ✅ Replace with your Razorpay test key
-        amount: total * 100, // 💰 Razorpay uses paise
+        key: "rzp_test_xxxxxxxxxxxxxx", // Replace with your Razorpay test key
+        amount: total * 100,
         currency: "INR",
         name: "MyStore",
         description: "Order Payment",
-        image: "https://yourdomain.com/logo.png", // optional
+        image: "https://yourdomain.com/logo.png",
         handler: function (response) {
-          alert("✅ Payment Successful!\nPayment ID: " + response.razorpay_payment_id);
+          alert("Payment Successful!\nID: " + response.razorpay_payment_id);
           localStorage.removeItem("cart");
           window.location.href = "thankyou.html";
         },
@@ -75,14 +71,12 @@
       };
 
       const rzp = new Razorpay(options);
-
       rzp.on('payment.failed', function (response){
-        alert("❌ Payment Failed!\nReason: " + response.error.description);
+        alert("Payment Failed! Reason: " + response.error.description);
       });
 
       rzp.open();
     }
   </script>
-
 </body>
 </html>
