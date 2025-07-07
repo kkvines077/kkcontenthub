@@ -29,14 +29,12 @@ window.onload = () => {
       <strong>${p.name}</strong><br>
       ₹${p.price}<br>
       <button onclick="addToCart(${p.id})">Add to Cart</button>
+      <a href="product.html?id=${p.id}">View Details</a>
     `;
     list.appendChild(div);
   });
 };
 
-function addToCart(id) {
-  alert("Product " + id + " added to cart!");
-}
 function addToCart(id) {
   let cart = JSON.parse(localStorage.getItem("cart")) || [];
   cart.push(id);
