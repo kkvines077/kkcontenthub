@@ -1,49 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <header>
-  <div class="logo">MyStore</div>
-  <input type="text" id="search" placeholder="Search products...">
-  <div class="header-links">
-   
-
-  </div>
-</header>
   <meta charset="UTF-8">
-  <title>MyStore - Home</title>
-   <a href="login.html" class="btn">🔐 Login</a>
-    <a href="signup.html" class="btn">📝 Signup</a>
-    <a href="cart.html" class="cart">🛒 Cart</a>
-    <script src="login.js"></script>
-  <link rel="stylesheet" href="style.css">
+  <title>MyStore - Online Shopping</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Buy smart gadgets and electronics from MyStore. India's trusted online shop.">
-<meta name="keywords" content="online shopping, electronics, Amazon clone, gadgets, headphones, smartwatch">
-<meta name="author" content="MyStore">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-XXXXXXX'); // Replace with your tracking ID
-</script>
+  <meta name="keywords" content="online shopping, electronics, Amazon clone, gadgets, headphones, smartwatch">
+  <meta name="author" content="MyStore">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+  <!-- Header -->
   <header>
     <div class="logo">MyStore</div>
     <input type="text" id="search" placeholder="Search products...">
-    <a href="cart.html" class="cart">🛒 Cart</a>
+    <div class="header-links">
+      <a href="login.html" class="btn">🔐 Login</a>
+      <a href="signup.html" class="btn">📝 Signup</a>
+      <a href="cart.html" class="cart">🛒 Cart</a>
+    </div>
   </header>
 
+  <!-- Main -->
   <main>
-    <h2>Featured Products</h2>
+    <h2>🛍️ Featured Products</h2>
     <div class="product-grid" id="product-list">
-      <!-- Products will be loaded here -->
+      <!-- Products loaded via script.js -->
     </div>
   </main>
 
+  <!-- Scripts -->
+  <script src="login.js"></script>
   <script src="script.js"></script>
+
 </body>
 </html>
