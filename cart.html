@@ -1,22 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>MyStore - Cart</title>
+  <title>Cart - MyStore</title>
   <link rel="stylesheet" href="style.css">
-  <script src="login.js"></script>
-  <meta name="description" content="Buy smart gadgets and electronics from MyStore. India's trusted online shop.">
-<meta name="keywords" content="online shopping, electronics, Amazon clone, gadgets, headphones, smartwatch">
-<meta name="author" content="MyStore">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-XXXXXXX'); // Replace with your tracking ID
-</script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
 <body>
 
@@ -33,6 +20,13 @@
   </main>
 
   <script>
+    // Check if logged in
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) {
+      alert("Please login first.");
+      window.location.href = "login.html";
+    }
+
     const cart = JSON.parse(localStorage.getItem("cart")) || [];
     const productMap = {
       1: { name: "Wireless Headphones", price: 1999 },
@@ -40,49 +34,40 @@
       3: { name: "Bluetooth Speaker", price: 1499 }
     };
 
-    const cartItemsDiv = document.getElementById("cart-items");
     let total = 0;
+    const div = document.getElementById("cart-items");
+
     cart.forEach(id => {
-      const item = productMap[id];
-      total += item.price;
-      const div = document.createElement("div");
-      div.innerHTML = `${item.name} - ₹${item.price}`;
-      cartItemsDiv.appendChild(div);
+      const p = productMap[id];
+      total += p.price;
+      div.innerHTML += `<div>${p.name} - ₹${p.price}</div>`;
     });
 
     document.getElementById("total").innerText = total;
 
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-<script>
-function checkout() {
-  const options = {
-    key: "rzp_test_your_key_here", // Replace with your Razorpay Key
-    amount: 50000, // amount in paise (₹500)
-    currency: "INR",
-    name: "MyStore",
-    description: "Order Payment",
-    image: "https://yourdomain.com/logo.png", // optional
-    handler: function (response) {
-      alert("Payment Successful: " + response.razorpay_payment_id);
-      window.location.href = "thankyou.html";
-    },
-    prefill: {
-      name: "Customer Name",
-      email: "email@example.com"
-    },
-    theme: {
-      color: "#3399cc"
-    }
-  };
+    function checkout() {
+      const options = {
+        key: "rzp_test_yourkeyhere", // Replace with your Razorpay test key
+        amount: total * 100,
+        currency: "INR",
+        name: "MyStore",
+        description: "Shopping Payment",
+        handler: function (response) {
+          alert("Payment Success! ID: " + response.razorpay_payment_id);
+          localStorage.removeItem("cart");
+          window.location.href = "thankyou.html";
+        },
+        prefill: {
+          name: user.name || "Customer",
+          email: user.email
+        },
+        theme: { color: "#3399cc" }
+      };
 
-  const rzp = new Razorpay(options);
-  rzp.open();
-}
-  const user = localStorage.getItem("user");
-if (!user) {
-  alert("Please login to continue to payment.");
-  window.location.href = "login.html";
-}
-</script>
+      const rzp = new Razorpay(options);
+      rzp.open();
+    }
+  </script>
+
 </body>
 </html>
