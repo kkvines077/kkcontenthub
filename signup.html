@@ -31,6 +31,19 @@
 
       const user = { name, email, password };
       localStorage.setItem("user", JSON.stringify(user));
+      {
+  "name": "KK Vines",
+  "email": "kk@example.com",
+  "address": "6/184 KMH Street, Kadapa",
+  "photo": "https://yourdomain.com/kk.jpg"
+}
+      localStorage.setItem("user", JSON.stringify({
+  name: "KK Vines",
+  email: "kk@example.com",
+  address: "6/184 KMH Street, Kadapa",
+  photo: "https://via.placeholder.com/60"
+}));
+
 
       alert("Account created!");
       window.location.href = "login.html";
