@@ -51,10 +51,32 @@
 
     document.getElementById("total").innerText = total;
 
-    function checkout() {
-      window.location.href = "https://razorpay.me/@chorbazar3752";
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+function checkout() {
+  const options = {
+    key: "rzp_test_your_key_here", // Replace with your Razorpay Key
+    amount: 50000, // amount in paise (₹500)
+    currency: "INR",
+    name: "MyStore",
+    description: "Order Payment",
+    image: "https://yourdomain.com/logo.png", // optional
+    handler: function (response) {
+      alert("Payment Successful: " + response.razorpay_payment_id);
+      window.location.href = "thankyou.html";
+    },
+    prefill: {
+      name: "Customer Name",
+      email: "email@example.com"
+    },
+    theme: {
+      color: "#3399cc"
     }
-  </script>
+  };
 
+  const rzp = new Razorpay(options);
+  rzp.open();
+}
+</script>
 </body>
 </html>
