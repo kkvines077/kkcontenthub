@@ -1,83 +1,69 @@
+<!-- ✅ FILE: admin.html (Product Upload + Order View) -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Admin Dashboard - MyStore</title>
+  <title>Admin Panel - MyStore</title>
   <link rel="stylesheet" href="style.css">
-  <!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"></script>
-<meta name="description" content="Buy smart gadgets and electronics from MyStore. India's trusted online shop.">
-<meta name="keywords" content="online shopping, electronics, Amazon clone, gadgets, headphones, smartwatch">
-<meta name="author" content="MyStore">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-XXXXXXX'); // Replace with your tracking ID
-</script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-
   <header>
-    <div class="logo">MyStore Admin</div>
-    <a href="index.html" class="cart">🏠 Home</a>
+    <div class="logo">🛠️ Admin Panel</div>
+    <a href="index.html" class="btn">🏠 Go to Store</a>
   </header>
-
   <main>
-    <h2>Manage Products</h2>
-    <form onsubmit="addProduct(event)">
-      <input type="text" id="name" placeholder="Product Name" required><br>
-      <input type="number" id="price" placeholder="Price ₹" required><br>
-      <input type="text" id="image" placeholder="Image URL" required><br>
-      <textarea id="desc" placeholder="Product Description" required></textarea><br>
-      <button type="submit">Add Product</button>
+    <h2>Add New Product</h2>
+    <form id="productForm" class="form-box">
+      <input type="text" id="productName" placeholder="Product Name" required><br>
+      <input type="number" id="productPrice" placeholder="Price" required><br>
+      <input type="url" id="productImage" placeholder="Image URL" required><br>
+      <button type="submit" class="btn">➕ Add Product</button>
     </form>
 
-    <h3>All Products</h3>
-    <div id="admin-products"></div>
+    <h2>Orders Received</h2>
+    <div id="orderList"></div>
   </main>
 
   <script>
-    let products = JSON.parse(localStorage.getItem("products")) || [];
+    const form = document.getElementById('productForm');
+    const productList = JSON.parse(localStorage.getItem('products')) || [];
+    const orderList = JSON.parse(localStorage.getItem('orders')) || [];
+    const users = JSON.parse(localStorage.getItem('user')) || {};
 
-    function addProduct(e) {
+    form.addEventListener('submit', e => {
       e.preventDefault();
-      const newProduct = {
-        id: Date.now(),
-        name: document.getElementById("name").value,
-        price: parseInt(document.getElementById("price").value),
-        image: document.getElementById("image").value,
-        desc: document.getElementById("desc").value
-      };
-      products.push(newProduct);
-      localStorage.setItem("products", JSON.stringify(products));
-      alert("Product added!");
-      location.reload();
+      const name = document.getElementById('productName').value;
+      const price = parseInt(document.getElementById('productPrice').value);
+      const image = document.getElementById('productImage').value;
+      productList.push({ id: Date.now(), name, price, image });
+      localStorage.setItem('products', JSON.stringify(productList));
+      alert('✅ Product added successfully!');
+      form.reset();
+    });
+
+    const container = document.getElementById('orderList');
+    const productMap = {};
+    productList.forEach(p => productMap[p.id] = p.name);
+
+    function renderOrders() {
+      if (orderList.length === 0) {
+        container.innerHTML = '<p>No orders placed yet.</p>';
+        return;
+      }
+      container.innerHTML = orderList.map(order => `
+        <div class="order-card">
+          <h4>Order ID: ${order.id}</h4>
+          <p>📅 Date: ${order.date}</p>
+          <p>📍 Address: ${users.address || 'Not Available'}</p>
+          <p>📞 Mobile: ${users.mobile || 'Not Provided'}</p>
+          <ul>${order.items.map(i => `<li>${productMap[i] || 'Unknown Product'}</li>`).join('')}</ul>
+          <p>Status: <strong>${order.status}</strong></p>
+        </div>
+      `).join('');
     }
 
-    function deleteProduct(id) {
-      products = products.filter(p => p.id !== id);
-      localStorage.setItem("products", JSON.stringify(products));
-      location.reload();
-    }
-
-    function loadAdminProducts() {
-      const div = document.getElementById("admin-products");
-      products.forEach(p => {
-        const el = document.createElement("div");
-        el.innerHTML = `
-          <b>${p.name}</b> - ₹${p.price} <br>
-          <img src="${p.image}" width="100"><br>
-          <button onclick="deleteProduct(${p.id})">Delete</button><hr>
-        `;
-        div.appendChild(el);
-      });
-    }
-
-    loadAdminProducts();
+    renderOrders();
   </script>
-
 </body>
 </html>
