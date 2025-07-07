@@ -1,21 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
   <title>Signup - MyStore</title>
   <link rel="stylesheet" href="style.css">
-  <meta name="description" content="Buy smart gadgets and electronics from MyStore. India's trusted online shop.">
-<meta name="keywords" content="online shopping, electronics, Amazon clone, gadgets, headphones, smartwatch">
-<meta name="author" content="MyStore">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-XXXXXXX'); // Replace with your tracking ID
-</script>
 </head>
 <body>
 
@@ -25,7 +12,7 @@
   </header>
 
   <main>
-    <h2>Create an Account</h2>
+    <h2>Create Account</h2>
     <form onsubmit="registerUser(event)">
       <input type="text" id="name" placeholder="Full Name" required><br>
       <input type="email" id="email" placeholder="Email" required><br>
@@ -38,11 +25,16 @@
   <script>
     function registerUser(event) {
       event.preventDefault();
-      const name = document.getElementById('name').value;
-      alert(`Account created for ${name} (Signup is demo only)`);
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      const user = { name, email, password };
+      localStorage.setItem("user", JSON.stringify(user));
+
+      alert("Account created!");
       window.location.href = "login.html";
     }
   </script>
-
 </body>
 </html>
