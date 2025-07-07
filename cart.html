@@ -89,6 +89,28 @@
         <p>📍 ${user.address || 'Not Provided'}</p>
       </div>
     `;
+    function checkout() {
+  if (cart.length === 0) return alert("Cart is empty!");
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  fetch("http://localhost:3000/order", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      customer: user.name,
+      address: user.address,
+      mobile: user.mobile,
+      items: cart
+    })
+  })
+    .then(res => res.json())
+    .then(data => {
+      alert("✅ Payment successful, Order ID: " + data.order.id);
+      localStorage.setItem("cart", JSON.stringify([]));
+      window.location.href = "order.html";
+    });
+    }
+    
   </script>
 </body>
 </html>
