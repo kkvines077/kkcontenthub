@@ -6,7 +6,6 @@ const products = [
 
 window.onload = function () {
   renderNav(); // from login.js
-
   const list = document.getElementById("product-list");
   products.forEach(p => {
     const div = document.createElement("div");
