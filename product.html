@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Product - MyStore</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header>
+    <div class="logo">MyStore</div>
+    <a href="cart.html" class="cart">🛒 Cart</a>
+  </header>
+
+  <main>
+    <div id="product-detail">
+      <!-- JS will load the product -->
+    </div>
+  </main>
+
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const productId = parseInt(urlParams.get('id'));
+
+    const productData = {
+      1: {
+        name: "Wireless Headphones",
+        price: 1999,
+        image: "assets/images/headphones.jpg",
+        desc: "High-quality wireless headphones with noise cancellation."
+      },
+      2: {
+        name: "Smart Watch",
+        price: 2499,
+        image: "assets/images/watch.jpg",
+        desc: "Stylish smart watch with heart-rate monitor and GPS."
+      },
+      3: {
+        name: "Bluetooth Speaker",
+        price: 1499,
+        image: "assets/images/speaker.jpg",
+        desc: "Portable speaker with bass boost and 12hr battery."
+      }
+    };
+
+    const product = productData[productId];
+
+    if (product) {
+      const div = document.getElementById("product-detail");
+      div.innerHTML = `
+        <h2>${product.name}</h2>
+        <img src="${product.image}" width="200"><br>
+        <strong>Price:</strong> ₹${product.price}<br><br>
+        <p>${product.desc}</p>
+        <button onclick="addToCart(${productId})">Add to Cart</button>
+      `;
+    }
+
+    function addToCart(id) {
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      cart.push(id);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      alert("Product added to cart!");
+    }
+  </script>
+
+</body>
+</html>
