@@ -13,6 +13,20 @@ header {
   justify-content: space-between;
   align-items: center;
 }
+.header-links {
+  display: flex;
+  gap: 10px;
+}
+
+.header-links .btn {
+  background: #fff;
+  color: #232f3e;
+  padding: 5px 10px;
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
 
 .logo {
   font-size: 1.5em;
