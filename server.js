@@ -1,5 +1,3 @@
-// ✅ server.js - Backend with Express + Bcrypt for Admin Login & Product/Order APIs
-
 const express = require('express');
 const fs = require('fs');
 const cors = require('cors');
@@ -17,11 +15,10 @@ const DB = {
   orders: './data/orders.json'
 };
 
-// Load JSON data
 const loadData = (file) => JSON.parse(fs.readFileSync(file, 'utf-8'));
 const saveData = (file, data) => fs.writeFileSync(file, JSON.stringify(data, null, 2));
 
-// Admin Login
+// Admin login route
 app.post('/admin/login', (req, res) => {
   const { username, password } = req.body;
   const admins = loadData(DB.admins);
@@ -37,13 +34,12 @@ app.post('/admin/login', (req, res) => {
   });
 });
 
-// Get Products
+// Product routes
 app.get('/admin/products', (req, res) => {
   const products = loadData(DB.products);
   res.json(products);
 });
 
-// Add Product
 app.post('/admin/products', (req, res) => {
   const products = loadData(DB.products);
   const newProduct = {
@@ -57,13 +53,12 @@ app.post('/admin/products', (req, res) => {
   res.json({ message: 'Product added', product: newProduct });
 });
 
-// Get Orders
+// Orders
 app.get('/admin/orders', (req, res) => {
   const orders = loadData(DB.orders);
   res.json(orders);
 });
 
-// Receive Order from frontend (customer checkout)
 app.post('/order', (req, res) => {
   const orders = loadData(DB.orders);
   const newOrder = {
@@ -80,7 +75,6 @@ app.post('/order', (req, res) => {
   res.json({ message: 'Order placed', order: newOrder });
 });
 
-// Start server
 app.listen(PORT, () => {
   console.log(`✅ Server running at http://localhost:${PORT}`);
 });
