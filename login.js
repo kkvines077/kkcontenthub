@@ -1,27 +1,20 @@
 // login.js
 
-function loginUser(event) {
-  event.preventDefault();
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  // Simulate login by saving user to localStorage
-  const user = { email };
-  localStorage.setItem("user", JSON.stringify(user));
-
-  alert("Login successful!");
-  window.location.href = "index.html";
-}
-
-function checkLoginStatus() {
+// Render user info or login/signup buttons
+function renderNav() {
   const user = JSON.parse(localStorage.getItem("user"));
-  const headerLinks = document.querySelector(".header-links");
+  const nav = document.getElementById("nav-links");
 
-  if (user && headerLinks) {
-    // If logged in, show logout
-    headerLinks.innerHTML = `
-      <span>👋 ${user.email}</span>
-      <a href="#" class="btn" onclick="logout()">🚪 Logout</a>
+  if (user) {
+    nav.innerHTML = `
+      <span class="welcome">👋 Welcome, ${user.name || "User"}</span>
+      <a href="#" class="btn logout" onclick="logout()">🚪 Logout</a>
+      <a href="cart.html" class="cart">🛒 Cart</a>
+    `;
+  } else {
+    nav.innerHTML = `
+      <a href="login.html" class="btn">🔐 Login</a>
+      <a href="signup.html" class="btn">📝 Signup</a>
       <a href="cart.html" class="cart">🛒 Cart</a>
     `;
   }
@@ -29,9 +22,8 @@ function checkLoginStatus() {
 
 function logout() {
   localStorage.removeItem("user");
-  alert("Logged out!");
-  window.location.reload();
+  alert("You have been logged out.");
+  location.reload();
 }
 
-// Automatically run on pages with header
-window.onload = checkLoginStatus;
+window.onload = renderNav;
