@@ -1,160 +1,49 @@
-/* style.css – Upgraded for KK Content Hub */
-
 body {
+  font-family: Arial, sans-serif;
   margin: 0;
-  font-family: 'Poppins', sans-serif;
-  background-color: #f9f9f9;
-  color: #222;
-  line-height: 1.6;
+  padding: 0;
+  background: #f4f4f4;
 }
 
 header {
-  background: linear-gradient(to right, #007BFF, #00BFFF);
-  padding: 20px;
+  background: #232f3e;
   color: white;
-  text-align: center;
+  display: flex;
+  padding: 1em;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .logo {
-  font-size: 2rem;
+  font-size: 1.5em;
   font-weight: bold;
 }
 
-nav ul {
-  display: flex;
-  justify-content: center;
-  list-style: none;
-  padding: 0;
-  margin: 15px 0 0 0;
-  flex-wrap: wrap;
-}
-
-nav ul li {
-  margin: 0 15px;
-}
-
-nav ul li a {
+.cart {
   color: white;
   text-decoration: none;
-  font-weight: 500;
-  transition: color 0.3s;
+  font-size: 1.2em;
 }
 
-nav ul li a:hover {
-  color: #ffc107;
+#search {
+  width: 50%;
+  padding: 0.5em;
 }
 
-.features {
-  padding: 40px 20px;
-  max-width: 900px;
-  margin: auto;
-}
-
-.features h2 {
-  text-align: center;
-  color: #007BFF;
-  margin-bottom: 30px;
-}
-
-.card {
-  background: white;
-  border-radius: 10px;
-  padding: 25px;
-  margin: 20px 0;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  transition: transform 0.3s;
-}
-
-.card:hover {
-  transform: translateY(-5px);
-}
-
-.card h3 {
-  color: #333;
-  margin-bottom: 10px;
-}
-
-.card p, .card li {
-  color: #444;
-}
-
-input, textarea, button {
-  width: 100%;
-  padding: 12px;
-  margin: 10px 0;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
-  font-family: inherit;
-}
-
-button, .cta {
-  background: #007BFF;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-  text-align: center;
-  display: inline-block;
-  text-decoration: none;
-  transition: background 0.3s;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 8px;
-}
-
-button:hover, .cta:hover {
-  background: #0056b3;
-}
-
-footer {
-  background-color: #222;
-  color: white;
-  text-align: center;
+main {
   padding: 20px;
-  font-size: 0.9rem;
 }
 
-@media (max-width: 600px) {
-  nav ul {
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .features {
-    padding: 20px 10px;
-  }
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
 }
 
-/* Visitor Counter (use public counter service in homepage) */
-.counter-box {
-  text-align: center;
-  margin-top: 30px;
-  font-size: 0.9rem;
-  color: #555;
-}
-
-/* Cookie Consent Popup */
-#cookieConsent {
-  position: fixed;
-  bottom: 0;
-  background: #222;
-  color: white;
-  width: 100%;
+.product-card {
+  background: white;
   padding: 15px;
+  border-radius: 8px;
   text-align: center;
-  z-index: 1000;
-}
-
-#cookieConsent button {
-  margin-left: 10px;
-  padding: 10px 15px;
-  background: #00BFFF;
-  border: none;
-  color: white;
-  cursor: pointer;
-  border-radius: 5px;
-}
-
-#cookieConsent button:hover {
-  background: #00aaff;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
