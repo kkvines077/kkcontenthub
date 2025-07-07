@@ -1,43 +1,110 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Signup - MyStore</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <title>Cart - MyStore</title>
+  <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    @media (max-width: 600px) {
+      body {
+        font-size: 16px;
+        padding: 10px;
+      }
+      img {
+        width: 50px;
+        height: 50px;
+      }
+      .btn {
+        width: 100%;
+        margin-top: 10px;
+      }
+    }
+    .loading {
+      display: none;
+      font-size: 16px;
+      color: green;
+    }
+  </style>
 </head>
 <body>
   <header>
-    <div class="logo">MyStore</div>
-    <a href="index.html" class="cart">🏠 Home</a>
+    <div class="logo">🛒 MyStore</div>
+    <div id="nav-links" class="header-links"></div>
   </header>
 
   <main>
-    <h2>Create Account</h2>
-    <form onsubmit="registerUser(event)" class="form-box">
-      <input type="text" id="name" placeholder="Full Name" required><br>
-      <input type="email" id="email" placeholder="Email" required><br>
-      <input type="password" id="password" placeholder="Password" required><br>
-      <input type="text" id="photo" placeholder="Profile Photo URL (optional)"><br>
-      <input type="text" id="address" placeholder="Delivery Address" required><br>
-      <button type="submit" class="btn">📝 Signup</button>
-    </form>
-    <p>Already have an account? <a href="login.html">Login here</a></p>
+    <h2>Your Shopping Cart</h2>
+    <div id="profile-info"></div>
+    <div id="cart-items"></div>
+    <h3>Total: ₹<span id="total">0</span></h3>
+    <a href="https://razorpay.me/@chorbazar3752" target="_blank">
+      <button class="btn">💳 Proceed to Pay with Razorpay</button>
+    </a>
+    <div id="loading" class="loading">Processing your order...</div>
   </main>
 
+  <script src="login.js"></script>
   <script>
-    function registerUser(event) {
-      event.preventDefault();
-      const name = document.getElementById("name").value;
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      const photo = document.getElementById("photo").value;
-      const address = document.getElementById("address").value;
-
-      const user = { name, email, password, photo, address };
-      localStorage.setItem("user", JSON.stringify(user));
-      alert("🎉 Account created! You can now login.");
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) {
+      alert("Please login to continue");
       window.location.href = "login.html";
     }
+
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    const productMap = {
+      1: { name: "Wireless Headphones", price: 1999 },
+      2: { name: "Smart Watch", price: 2499 },
+      3: { name: "Bluetooth Speaker", price: 1499 }
+    };
+
+    let total = 0;
+    const cartItemsDiv = document.getElementById("cart-items");
+
+    function renderCart() {
+      cartItemsDiv.innerHTML = "";
+      total = 0;
+
+      if (cart.length === 0) {
+        cartItemsDiv.innerHTML = "<p>Your cart is empty.</p>";
+        document.getElementById("total").innerText = "0";
+        return;
+      }
+
+      cart.forEach((id, index) => {
+        const p = productMap[id] || { name: "Unknown Product", price: 0 };
+        total += p.price;
+        cartItemsDiv.innerHTML += `
+          <div>
+            ${p.name} - ₹${p.price}
+            <button onclick="removeFromCart(${index})">❌ Remove</button>
+          </div>
+        `;
+      });
+
+      document.getElementById("total").innerText = total;
+    }
+
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      renderCart();
+    }
+
+    const profile = document.getElementById("profile-info");
+    profile.innerHTML = `
+      <div style="display: flex; align-items: center;">
+        <img src="${user.photo || 'https://via.placeholder.com/60'}" style="width:60px; height:60px; border-radius:50%;">
+        <div style="margin-left: 10px;">
+          <strong>${user.name || 'Customer'}</strong><br>
+          📍 ${user.address || 'Not Provided'}<br>
+          📞 ${user.mobile || 'N/A'}
+        </div>
+      </div>
+    `;
+
+    renderCart();
   </script>
 </body>
 </html>
