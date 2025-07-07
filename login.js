@@ -1,13 +1,10 @@
-// login.js
-
-// Render user info or login/signup buttons
 function renderNav() {
   const user = JSON.parse(localStorage.getItem("user"));
   const nav = document.getElementById("nav-links");
 
   if (user) {
     nav.innerHTML = `
-      <span class="welcome">👋 Welcome, ${user.name || "User"}</span>
+      <span class="welcome">👋 Hi, ${user.name}</span>
       <a href="#" class="btn logout" onclick="logout()">🚪 Logout</a>
       <a href="cart.html" class="cart">🛒 Cart</a>
     `;
