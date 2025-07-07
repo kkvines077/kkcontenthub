@@ -77,6 +77,11 @@ function checkout() {
   const rzp = new Razorpay(options);
   rzp.open();
 }
+  const user = localStorage.getItem("user");
+if (!user) {
+  alert("Please login to continue to payment.");
+  window.location.href = "login.html";
+}
 </script>
 </body>
 </html>
