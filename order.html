@@ -1,64 +1,56 @@
-<!-- order.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Your Orders - MyStore</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .order-box {
+      border: 1px solid #ccc;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      background: #f9f9f9;
+    }
+    .order-box h3 {
+      margin: 0 0 10px;
+    }
+  </style>
 </head>
 <body>
   <header>
-    <div class="logo">MyStore</div>
-    <div id="nav-links" class="header-links"></div>
+    <div class="logo">🧾 Your Orders</div>
   </header>
-
   <main>
-    <h2>Your Orders</h2>
-    <div id="order-list"></div>
+    <div id="orders"></div>
   </main>
 
-  <script src="login.js"></script>
   <script>
     const user = JSON.parse(localStorage.getItem("user"));
-    const orders = JSON.parse(localStorage.getItem("orders")) || [];
-    const productMap = {
-      1: "Wireless Headphones",
-      2: "Smart Watch",
-      3: "Bluetooth Speaker"
-    };
+    fetch("http://localhost:3000/admin/orders")
+      .then(res => res.json())
+      .then(data => {
+        const ordersDiv = document.getElementById("orders");
+        const userOrders = data.filter(o => o.customer === user.name);
+        if (userOrders.length === 0) {
+          ordersDiv.innerHTML = '<p>You have no orders yet.</p>';
+          return;
+        }
 
-    const orderList = document.getElementById("order-list");
-
-    function renderOrders() {
-      orderList.innerHTML = "";
-      if (orders.length === 0) {
-        orderList.innerHTML = "<p>No orders yet.</p>";
-        return;
-      }
-
-      orders.forEach((order, index) => {
-        const items = order.items.map(id => `<li>${productMap[id]}</li>`).join("");
-        orderList.innerHTML += `
-          <div class="order-card">
-            <h4>Order #${order.id}</h4>
-            <p>📅 ${order.date}</p>
-            <ul>${items}</ul>
-            <p>📦 Status: <strong>${order.status}</strong></p>
-            <button onclick="cancelOrder(${index})" class="btn logout">❌ Cancel Order</button>
-          </div>
-        `;
+        userOrders.forEach(order => {
+          ordersDiv.innerHTML += `
+            <div class="order-box">
+              <h3>Order ID: ${order.id}</h3>
+              <p>Placed on: ${order.date}</p>
+              <p>Address: ${order.address}</p>
+              <p>Mobile: ${order.mobile}</p>
+              <p>Status: <strong>${order.status}</strong></p>
+              <p>Items: ${order.items.join(", ")}</p>
+            </div>
+          `;
+        });
       });
-    }
-
-    function cancelOrder(index) {
-      if (confirm("Are you sure you want to cancel this order?")) {
-        orders.splice(index, 1);
-        localStorage.setItem("orders", JSON.stringify(orders));
-        renderOrders();
-      }
-    }
-
-    renderOrders();
   </script>
 </body>
 </html>
