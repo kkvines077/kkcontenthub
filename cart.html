@@ -1,10 +1,10 @@
+<!-- cart.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Cart - MyStore</title>
-  <link rel="stylesheet" href="style.css">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <header>
@@ -18,7 +18,6 @@
     <div id="cart-items"></div>
     <h3>Total: ₹<span id="total">0</span></h3>
     <button onclick="checkout()" class="btn">💳 Proceed to Pay</button>
-    <div id="tracking-info"></div>
   </main>
 
   <script src="login.js"></script>
@@ -66,30 +65,30 @@
         alert("Your cart is empty!");
         return;
       }
-      alert("Redirecting to payment...");
-      window.location.href = "https://razorpay.me/@chorbazar3752";
+      // Save cart to orders
+      const existingOrders = JSON.parse(localStorage.getItem("orders")) || [];
+      const newOrder = {
+        id: Date.now(),
+        items: [...cart],
+        status: "Order Placed",
+        date: new Date().toLocaleString()
+      };
+      existingOrders.push(newOrder);
+      localStorage.setItem("orders", JSON.stringify(existingOrders));
+      localStorage.setItem("cart", JSON.stringify([])); // empty cart
+      alert("✅ Payment successful! Redirecting to orders...");
+      window.location.href = "order.html";
     }
 
     // Profile Info
     const profile = document.getElementById("profile-info");
     profile.innerHTML = `
-      <div style="margin:10px 0; padding:10px; background:#fff; border-radius:8px;">
+      <div>
         <img src="${user.photo || 'https://via.placeholder.com/60'}" style="width:60px; height:60px; border-radius:50%;">
         <strong style="margin-left: 10px;">${user.name || 'Customer'}</strong>
-        <p>📍 Address: ${user.address || 'Not Provided'}</p>
+        <p>📍 ${user.address || 'Not Provided'}</p>
       </div>
     `;
-
-    // Tracking
-    const trackingDiv = document.getElementById("tracking-info");
-    if (cart.length > 0) {
-      trackingDiv.innerHTML = `
-        <h4>📦 Tracking</h4>
-        <ul>
-          ${cart.map(id => `<li>${productMap[id].name}: <span style='color:green'>In Transit</span></li>`).join('')}
-        </ul>
-      `;
-    }
   </script>
 </body>
 </html>
