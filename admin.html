@@ -77,6 +77,28 @@
         <button class="btn logout" onclick="adminLogout()">🚪 Logout</button>
       `;
     }
+    function adminLogin(e) {
+  e.preventDefault();
+  const username = document.getElementById("adminUser").value;
+  const password = document.getElementById("adminPass").value;
+
+  fetch("http://localhost:3000/admin/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.token) {
+        localStorage.setItem("admin_token", data.token);
+        showAdminPanel();
+      } else {
+        alert("Login failed");
+      }
+    })
+    .catch(() => alert("Server error"));
+    }
+    
 
     // Check login
     if (localStorage.getItem("admin_logged") === "true") {
