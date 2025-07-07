@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Cart - MyStore</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
 
@@ -13,17 +15,17 @@
   </header>
 
   <main>
-    <h2>Your Cart</h2>
+    <h2>Your Shopping Cart</h2>
     <div id="cart-items"></div>
     <h3>Total: ₹<span id="total">0</span></h3>
-    <button onclick="checkout()">Proceed to Pay</button>
+    <button onclick="checkout()" class="btn">💳 Proceed to Pay</button>
   </main>
 
   <script>
-    // Check if logged in
+    // Check login
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user) {
-      alert("Please login first.");
+      alert("⚠️ Please login to continue");
       window.location.href = "login.html";
     }
 
@@ -46,14 +48,20 @@
     document.getElementById("total").innerText = total;
 
     function checkout() {
+      if (total === 0) {
+        alert("Your cart is empty!");
+        return;
+      }
+
       const options = {
-        key: "rzp_test_yourkeyhere", // Replace with your Razorpay test key
-        amount: total * 100,
+        key: "rzp_test_xxxxxxxxxxxxxx", // ✅ Replace with your Razorpay test key
+        amount: total * 100, // 💰 Razorpay uses paise
         currency: "INR",
         name: "MyStore",
-        description: "Shopping Payment",
+        description: "Order Payment",
+        image: "https://yourdomain.com/logo.png", // optional
         handler: function (response) {
-          alert("Payment Success! ID: " + response.razorpay_payment_id);
+          alert("✅ Payment Successful!\nPayment ID: " + response.razorpay_payment_id);
           localStorage.removeItem("cart");
           window.location.href = "thankyou.html";
         },
@@ -61,10 +69,17 @@
           name: user.name || "Customer",
           email: user.email
         },
-        theme: { color: "#3399cc" }
+        theme: {
+          color: "#3399cc"
+        }
       };
 
       const rzp = new Razorpay(options);
+
+      rzp.on('payment.failed', function (response){
+        alert("❌ Payment Failed!\nReason: " + response.error.description);
+      });
+
       rzp.open();
     }
   </script>
