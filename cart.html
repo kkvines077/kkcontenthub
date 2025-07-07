@@ -38,7 +38,10 @@
     <div id="profile-info"></div>
     <div id="cart-items"></div>
     <h3>Total: ₹<span id="total">0</span></h3>
-    <button id="payBtn" class="btn">💳 Proceed to Pay</button>
+    <a href="https://razorpay.me/@chorbazar3752" target="_blank">
+      <button class="btn">💳 Proceed to Pay with Razorpay</button>
+    </a>
+    <button id="confirmOrderBtn" class="btn">✅ Confirm Order After Payment</button>
     <div id="loading" class="loading">Processing your order...</div>
   </main>
 
@@ -90,7 +93,7 @@
       renderCart();
     }
 
-    function checkout() {
+    function confirmOrder() {
       if (cart.length === 0) {
         alert("🛒 Your cart is empty.");
         return;
@@ -111,7 +114,7 @@
         .then(res => res.json())
         .then(data => {
           if (data.order && data.order.id) {
-            alert("✅ Payment successful! Order ID: " + data.order.id);
+            alert("✅ Order confirmed! Order ID: " + data.order.id);
             localStorage.setItem("cart", JSON.stringify([]));
             window.location.href = "order.html";
           } else {
@@ -120,14 +123,14 @@
         })
         .catch((err) => {
           console.error("Order Error:", err);
-          alert("❌ Server error. Payment failed.");
+          alert("❌ Server error. Order not confirmed.");
         })
         .finally(() => {
           document.getElementById("loading").style.display = "none";
         });
     }
 
-    document.getElementById("payBtn").addEventListener("click", checkout);
+    document.getElementById("confirmOrderBtn").addEventListener("click", confirmOrder);
 
     const profile = document.getElementById("profile-info");
     profile.innerHTML = `
