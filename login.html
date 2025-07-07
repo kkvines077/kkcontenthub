@@ -1,21 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8">
   <title>Login - MyStore</title>
   <link rel="stylesheet" href="style.css">
-  <meta name="description" content="Buy smart gadgets and electronics from MyStore. India's trusted online shop.">
-<meta name="keywords" content="online shopping, electronics, Amazon clone, gadgets, headphones, smartwatch">
-<meta name="author" content="MyStore">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-XXXXXXX'); // Replace with your tracking ID
-</script>
 </head>
 <body>
 
@@ -37,12 +24,16 @@
   <script>
     function loginUser(event) {
       event.preventDefault();
-      const email = document.getElementById('email').value;
-      const pass = document.getElementById('password').value;
-      alert(`Welcome back ${email}! (Login is demo only)`);
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      // Save the login session
+      const user = { email, password };
+      localStorage.setItem("user", JSON.stringify(user));
+
+      alert("Login successful!");
       window.location.href = "index.html";
     }
   </script>
-
 </body>
 </html>
