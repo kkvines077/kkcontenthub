@@ -5,7 +5,6 @@
   <meta charset="UTF-8">
   <title>Cart - MyStore</title>
   <link rel="stylesheet" href="style.css">
-  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
@@ -17,9 +16,11 @@
 
   <main>
     <h2>Your Shopping Cart</h2>
+    <div id="profile-info"></div>
     <div id="cart-items"></div>
     <h3>Total: ₹<span id="total">0</span></h3>
     <button onclick="checkout()" class="btn">💳 Proceed to Pay</button>
+    <div id="tracking-info"></div>
   </main>
 
   <script src="login.js"></script>
@@ -38,44 +39,61 @@
     };
 
     let total = 0;
-    const div = document.getElementById("cart-items");
+    const cartItemsDiv = document.getElementById("cart-items");
 
-    cart.forEach(id => {
-      const p = productMap[id];
-      total += p.price;
-      div.innerHTML += `<div>${p.name} - ₹${p.price}</div>`;
-    });
+    function renderCart() {
+      cartItemsDiv.innerHTML = "";
+      total = 0;
+      cart.forEach((id, index) => {
+        const p = productMap[id];
+        total += p.price;
+        cartItemsDiv.innerHTML += `
+          <div>
+            ${p.name} - ₹${p.price}
+            <button onclick="removeFromCart(${index})" style="margin-left:10px">❌ Remove</button>
+          </div>
+        `;
+      });
+      document.getElementById("total").innerText = total;
+    }
 
-    document.getElementById("total").innerText = total;
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      renderCart();
+    }
+
+    renderCart();
 
     function checkout() {
-      const options = {
-        key: "https://razorpay.me/@chorbazar3752", // Replace with your Razorpay test key
-        amount: total * 100,
-        currency: "INR",
-        name: "MyStore",
-        description: "Order Payment",
-        image: "https://yourdomain.com/logo.png",
-        handler: function (response) {
-          alert("Payment Successful!\nID: " + response.razorpay_payment_id);
-          localStorage.removeItem("cart");
-          window.location.href = "thankyou.html";
-        },
-        prefill: {
-          name: user.name || "Customer",
-          email: user.email
-        },
-        theme: {
-          color: "#3399cc"
-        }
-      };
+      if (total === 0) {
+        alert("Your cart is empty!");
+        return;
+      }
+      // Simulated checkout redirect (Razorpay.me payment link)
+      alert("Redirecting to payment...");
+      window.location.href = "https://razorpay.me/@chorbazar3752";
+    }
 
-      const rzp = new Razorpay(options);
-      rzp.on('payment.failed', function (response){
-        alert("Payment Failed! Reason: " + response.error.description);
-      });
+    // Show profile picture and address
+    const profile = document.getElementById("profile-info");
+    profile.innerHTML = `
+      <div style="margin: 10px 0; padding: 10px; background: #fff; border-radius: 8px;">
+        <img src="${user.photo || 'https://via.placeholder.com/60'}" alt="Profile" style="width: 60px; height: 60px; border-radius: 50%; vertical-align: middle;">
+        <strong style="margin-left: 10px;">${user.name || 'Customer'}</strong>
+        <p>📍 Address: ${user.address || 'Not Provided'}</p>
+      </div>
+    `;
 
-      rzp.open();
+    // Product tracking simulation
+    const trackingDiv = document.getElementById("tracking-info");
+    if (cart.length > 0) {
+      trackingDiv.innerHTML = `
+        <h4>📦 Tracking</h4>
+        <ul>
+          ${cart.map(id => `<li>${productMap[id].name}: <span style='color:green'>In Transit</span></li>`).join('')}
+        </ul>
+      `;
     }
   </script>
 </body>
