@@ -1,20 +1,86 @@
+// ✅ server.js - Backend with Express + Bcrypt for Admin Login & Product/Order APIs
+
 const express = require('express');
-const app = express();
-const cors = require('cors');
 const fs = require('fs');
+const cors = require('cors');
+const bcrypt = require('bcryptjs');
+const bodyParser = require('body-parser');
+const app = express();
+const PORT = 3000;
 
 app.use(cors());
-app.use(express.json());
-app.use(express.static(__dirname)); // Serves static files
+app.use(bodyParser.json());
 
-app.get('/products', (req, res) => {
-  fs.readFile('products.json', 'utf8', (err, data) => {
-    if (err) return res.status(500).send("Error reading products.");
-    res.send(JSON.parse(data));
+const DB = {
+  admins: './data/admins.json',
+  products: './data/products.json',
+  orders: './data/orders.json'
+};
+
+// Load JSON data
+const loadData = (file) => JSON.parse(fs.readFileSync(file, 'utf-8'));
+const saveData = (file, data) => fs.writeFileSync(file, JSON.stringify(data, null, 2));
+
+// Admin Login
+app.post('/admin/login', (req, res) => {
+  const { username, password } = req.body;
+  const admins = loadData(DB.admins);
+  const admin = admins.find(u => u.username === username);
+  if (!admin) return res.status(401).json({ message: 'Admin not found' });
+
+  bcrypt.compare(password, admin.password, (err, result) => {
+    if (result) {
+      res.json({ message: 'Login success', token: 'fake-jwt-token' });
+    } else {
+      res.status(403).json({ message: 'Invalid password' });
+    }
   });
 });
 
-const PORT = 3000;
+// Get Products
+app.get('/admin/products', (req, res) => {
+  const products = loadData(DB.products);
+  res.json(products);
+});
+
+// Add Product
+app.post('/admin/products', (req, res) => {
+  const products = loadData(DB.products);
+  const newProduct = {
+    id: Date.now(),
+    name: req.body.name,
+    price: req.body.price,
+    image: req.body.image
+  };
+  products.push(newProduct);
+  saveData(DB.products, products);
+  res.json({ message: 'Product added', product: newProduct });
+});
+
+// Get Orders
+app.get('/admin/orders', (req, res) => {
+  const orders = loadData(DB.orders);
+  res.json(orders);
+});
+
+// Receive Order from frontend (customer checkout)
+app.post('/order', (req, res) => {
+  const orders = loadData(DB.orders);
+  const newOrder = {
+    id: Date.now(),
+    date: new Date().toLocaleString(),
+    customer: req.body.customer,
+    items: req.body.items,
+    address: req.body.address,
+    mobile: req.body.mobile,
+    status: 'Placed'
+  };
+  orders.push(newOrder);
+  saveData(DB.orders, orders);
+  res.json({ message: 'Order placed', order: newOrder });
+});
+
+// Start server
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`✅ Server running at http://localhost:${PORT}`);
 });
