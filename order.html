@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="Track or cancel your KK Content Hub order. Fill address, check status, or request cancellation.">
+  <meta name="keywords" content="track content order, cancel writing order, address form, content delivery">
+  <meta name="author" content="KK Content Hub">
+  <title>Track or Cancel Order - KK Content Hub</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <div class="logo">KK Content Hub</div>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="order.html">Track Order</a></li>
+        <li><a href="payment.html">Payment</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="features">
+    <h2>📦 Order Details & Tracking</h2>
+
+    <!-- Address Form -->
+    <div class="card">
+      <h3>📝 Fill Your Delivery Details</h3>
+      <input type="text" id="name" placeholder="Your Name" />
+      <input type="email" id="email" placeholder="Email Address" />
+      <input type="tel" id="whatsapp" placeholder="WhatsApp Number" />
+      <textarea id="address" placeholder="Full Address"></textarea>
+      <input type="text" id="pincode" placeholder="Pin Code" />
+      <button onclick="submitAddress()">Submit Address</button>
+      <p id="addressMsg"></p>
+    </div>
+
+    <!-- Order Tracking -->
+    <div class="card">
+      <h3>🚚 Track Your Order</h3>
+      <input type="text" id="trackId" placeholder="Enter your Order ID (e.g. KK1234)" />
+      <button onclick="trackOrder()">Check Status</button>
+      <p id="trackResult"></p>
+    </div>
+
+    <!-- Cancel Order -->
+    <div class="card">
+      <h3>❌ Request to Cancel Order</h3>
+      <input type="text" id="cancelId" placeholder="Your Order ID" />
+      <textarea id="cancelReason" placeholder="Reason for cancellation"></textarea>
+      <button onclick="cancelOrder()">Submit Cancellation</button>
+      <p id="cancelResult"></p>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 KK Content Hub. All rights reserved.</p>
+  </footer>
+
+  <script>
+    function submitAddress() {
+      const name = document.getElementById('name').value.trim();
+      const address = document.getElementById('address').value.trim();
+      if (!name || !address) {
+        document.getElementById('addressMsg').innerText = '❌ Please fill all details.';
+      } else {
+        document.getElementById('addressMsg').innerText = `✅ Thanks ${name}, your address is saved. We'll contact you on WhatsApp!`;
+      }
+    }
+
+    function trackOrder() {
+      const id = document.getElementById('trackId').value.trim();
+      let status = '❌ Invalid Order ID';
+      if (id === 'KK1234') status = '✅ Order Found: Status – Delivered';
+      else if (id === 'KK5678') status = '🕓 Order Status – In Progress';
+      document.getElementById('trackResult').innerText = status;
+    }
+
+    function cancelOrder() {
+      const id = document.getElementById('cancelId').value.trim();
+      const reason = document.getElementById('cancelReason').value.trim();
+      if (!id || !reason) {
+        document.getElementById('cancelResult').innerText = '❌ Please enter Order ID and reason.';
+      } else {
+        document.getElementById('cancelResult').innerText = `❌ Cancel request for ${id} submitted. We'll review and confirm shortly.`;
+      }
+    }
+  </script>
+</body>
+</html>
