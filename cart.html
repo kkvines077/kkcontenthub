@@ -1,4 +1,3 @@
-<!-- FILE: cart.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,7 +7,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-
   <header>
     <div class="logo">MyStore</div>
     <div id="nav-links" class="header-links"></div>
@@ -48,11 +46,9 @@
         const p = productMap[id];
         total += p.price;
         cartItemsDiv.innerHTML += `
-          <div>
-            ${p.name} - ₹${p.price}
-            <button onclick="removeFromCart(${index})" style="margin-left:10px">❌ Remove</button>
-          </div>
-        `;
+          <div>${p.name} - ₹${p.price}
+            <button onclick="removeFromCart(${index})">❌ Remove</button>
+          </div>`;
       });
       document.getElementById("total").innerText = total;
     }
@@ -70,22 +66,21 @@
         alert("Your cart is empty!");
         return;
       }
-      // Simulated checkout redirect (Razorpay.me payment link)
       alert("Redirecting to payment...");
       window.location.href = "https://razorpay.me/@chorbazar3752";
     }
 
-    // Show profile picture and address
+    // Profile Info
     const profile = document.getElementById("profile-info");
     profile.innerHTML = `
-      <div style="margin: 10px 0; padding: 10px; background: #fff; border-radius: 8px;">
-        <img src="${user.photo || 'https://via.placeholder.com/60'}" alt="Profile" style="width: 60px; height: 60px; border-radius: 50%; vertical-align: middle;">
+      <div style="margin:10px 0; padding:10px; background:#fff; border-radius:8px;">
+        <img src="${user.photo || 'https://via.placeholder.com/60'}" style="width:60px; height:60px; border-radius:50%;">
         <strong style="margin-left: 10px;">${user.name || 'Customer'}</strong>
         <p>📍 Address: ${user.address || 'Not Provided'}</p>
       </div>
     `;
 
-    // Product tracking simulation
+    // Tracking
     const trackingDiv = document.getElementById("tracking-info");
     if (cart.length > 0) {
       trackingDiv.innerHTML = `
