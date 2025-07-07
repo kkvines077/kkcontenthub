@@ -5,6 +5,27 @@
   <title>Cart - MyStore</title>
   <link rel="stylesheet" href="style.css" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    @media (max-width: 600px) {
+      body {
+        font-size: 16px;
+        padding: 10px;
+      }
+      img {
+        width: 50px;
+        height: 50px;
+      }
+      .btn {
+        width: 100%;
+        margin-top: 10px;
+      }
+    }
+    .loading {
+      display: none;
+      font-size: 16px;
+      color: green;
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -18,6 +39,7 @@
     <div id="cart-items"></div>
     <h3>Total: ₹<span id="total">0</span></h3>
     <button onclick="checkout()" class="btn">💳 Proceed to Pay</button>
+    <div id="loading" class="loading">Processing your order...</div>
   </main>
 
   <script src="login.js"></script>
@@ -74,6 +96,8 @@
         return;
       }
 
+      document.getElementById("loading").style.display = "block";
+
       fetch("http://localhost:3000/order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -92,10 +116,12 @@
         })
         .catch(() => {
           alert("❌ Server error. Payment failed.");
+        })
+        .finally(() => {
+          document.getElementById("loading").style.display = "none";
         });
     }
 
-    // Render profile info
     const profile = document.getElementById("profile-info");
     profile.innerHTML = `
       <div style="display: flex; align-items: center;">
