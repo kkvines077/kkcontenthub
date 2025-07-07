@@ -47,3 +47,25 @@ main {
   text-align: center;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  #search {
+    width: 90%;
+    margin-top: 10px;
+  }
+
+  .product-grid {
+    grid-template-columns: 1fr;
+  }
+
+  form input, form textarea {
+    width: 90%;
+    margin: 5px auto;
+    display: block;
+  }
+}
+
