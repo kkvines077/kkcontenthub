@@ -1,22 +1,22 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <title>Login - MyStore</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
   <header>
     <div class="logo">MyStore</div>
     <a href="index.html" class="cart">🏠 Home</a>
   </header>
 
   <main>
-    <h2>Login</h2>
-    <form onsubmit="loginUser(event)">
+    <h2>Login to Your Account</h2>
+    <form onsubmit="loginUser(event)" class="form-box">
       <input type="email" id="email" placeholder="Email" required><br>
       <input type="password" id="password" placeholder="Password" required><br>
-      <button type="submit">Login</button>
+      <button type="submit" class="btn">🔐 Login</button>
     </form>
     <p>Don't have an account? <a href="signup.html">Signup here</a></p>
   </main>
@@ -26,13 +26,14 @@
       event.preventDefault();
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
+      const storedUser = JSON.parse(localStorage.getItem("user"));
 
-      // Save the login session
-      const user = { email, password };
-      localStorage.setItem("user", JSON.stringify(user));
-
-      alert("Login successful!");
-      window.location.href = "index.html";
+      if (storedUser && storedUser.email === email && storedUser.password === password) {
+        alert("✅ Login successful!");
+        window.location.href = "index.html";
+      } else {
+        alert("❌ Invalid email or password.");
+      }
     }
   </script>
 </body>
