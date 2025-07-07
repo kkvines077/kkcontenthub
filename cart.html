@@ -1,14 +1,14 @@
-<!-- cart.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>Cart - MyStore</title>
   <link rel="stylesheet" href="style.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 </head>
 <body>
   <header>
-    <div class="logo">MyStore</div>
+    <div class="logo">🛒 MyStore</div>
     <div id="nav-links" class="header-links"></div>
   </header>
 
@@ -41,14 +41,24 @@
     function renderCart() {
       cartItemsDiv.innerHTML = "";
       total = 0;
+
+      if (cart.length === 0) {
+        cartItemsDiv.innerHTML = "<p>Your cart is empty.</p>";
+        document.getElementById("total").innerText = "0";
+        return;
+      }
+
       cart.forEach((id, index) => {
-        const p = productMap[id];
+        const p = productMap[id] || { name: "Unknown Product", price: 0 };
         total += p.price;
         cartItemsDiv.innerHTML += `
-          <div>${p.name} - ₹${p.price}
+          <div>
+            ${p.name} - ₹${p.price}
             <button onclick="removeFromCart(${index})">❌ Remove</button>
-          </div>`;
+          </div>
+        `;
       });
+
       document.getElementById("total").innerText = total;
     }
 
@@ -58,59 +68,47 @@
       renderCart();
     }
 
-    renderCart();
-
     function checkout() {
-      if (total === 0) {
-        alert("Your cart is empty!");
+      if (cart.length === 0) {
+        alert("🛒 Your cart is empty.");
         return;
       }
-      // Save cart to orders
-      const existingOrders = JSON.parse(localStorage.getItem("orders")) || [];
-      const newOrder = {
-        id: Date.now(),
-        items: [...cart],
-        status: "Order Placed",
-        date: new Date().toLocaleString()
-      };
-      existingOrders.push(newOrder);
-      localStorage.setItem("orders", JSON.stringify(existingOrders));
-      localStorage.setItem("cart", JSON.stringify([])); // empty cart
-      alert("✅ Payment successful! Redirecting to orders...");
-      window.location.href = "order.html";
+
+      fetch("http://localhost:3000/order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customer: user.name,
+          address: user.address,
+          mobile: user.mobile,
+          items: cart
+        })
+      })
+        .then(res => res.json())
+        .then(data => {
+          alert("✅ Payment successful! Order ID: " + data.order.id);
+          localStorage.setItem("cart", JSON.stringify([]));
+          window.location.href = "order.html";
+        })
+        .catch(() => {
+          alert("❌ Server error. Payment failed.");
+        });
     }
 
-    // Profile Info
+    // Render profile info
     const profile = document.getElementById("profile-info");
     profile.innerHTML = `
-      <div>
+      <div style="display: flex; align-items: center;">
         <img src="${user.photo || 'https://via.placeholder.com/60'}" style="width:60px; height:60px; border-radius:50%;">
-        <strong style="margin-left: 10px;">${user.name || 'Customer'}</strong>
-        <p>📍 ${user.address || 'Not Provided'}</p>
+        <div style="margin-left: 10px;">
+          <strong>${user.name || 'Customer'}</strong><br>
+          📍 ${user.address || 'Not Provided'}<br>
+          📞 ${user.mobile || 'N/A'}
+        </div>
       </div>
     `;
-    function checkout() {
-  if (cart.length === 0) return alert("Cart is empty!");
-  const user = JSON.parse(localStorage.getItem("user"));
 
-  fetch("http://localhost:3000/order", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      customer: user.name,
-      address: user.address,
-      mobile: user.mobile,
-      items: cart
-    })
-  })
-    .then(res => res.json())
-    .then(data => {
-      alert("✅ Payment successful, Order ID: " + data.order.id);
-      localStorage.setItem("cart", JSON.stringify([]));
-      window.location.href = "order.html";
-    });
-    }
-    
+    renderCart();
   </script>
 </body>
 </html>
