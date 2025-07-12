@@ -1,60 +1,32 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Verify Email – VidEarn</title>
-  <link rel="stylesheet" href="style.css">
-  <style>
-    main {
-      text-align: center;
-      margin-top: 100px;
-      font-family: Arial, sans-serif;
-    }
-    h2 {
-      font-size: 28px;
-      margin-bottom: 20px;
-    }
-    p {
-      font-size: 18px;
-    }
-    .email-icon {
-      font-size: 60px;
-      color: #007BFF;
-      margin-bottom: 20px;
-    }
-    .btn {
-      background: #007BFF;
-      color: white;
-      padding: 10px 24px;
-      border: none;
-      border-radius: 6px;
-      margin-top: 20px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    .status {
-      margin-top: 20px;
-      font-weight: bold;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <nav>
-    <div class="logo">VidEarn</div>
-    <ul id="nav-links"></ul>
+    <div class="logo">🎥 VidEarn</div>
+    <ul class="nav-links">
+      <li><a href="index.html">🏠 Home</a></li>
+      <li><a href="login.html">Login</a></li>
+    </ul>
   </nav>
 
-  <main>
-    <div class="email-icon">📬</div>
-    <h2>Check Your Inbox</h2>
-    <p>We've sent a verification email to your address.</p>
-    <p>Please verify your email before continuing.</p>
-    <p class="status" id="status">⏳ Waiting for verification...</p>
-    <button class="btn" onclick="goToLogin()">Go to Login</button>
+  <main class="slide-right">
+    <h1>📨 Check Your Inbox</h1>
+    <p>We sent a verification link to your email.</p>
+    <p>✅ After clicking the link, this page will auto-redirect.</p>
+    <p id="status">⏳ Waiting for verification...</p>
   </main>
 
-  <!-- Firebase SDKs -->
+  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
+
+  <!-- Script -->
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyD4OiQMtKJdUz7Qcu6GyXKD-AwqA8MOE0o",
@@ -68,26 +40,23 @@
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
-    // 🔁 Check if user is verified every 5 seconds
-    auth.onAuthStateChanged(user => {
+    auth.onAuthStateChanged((user) => {
       if (user) {
-        const interval = setInterval(() => {
+        const checkVerified = setInterval(() => {
           user.reload().then(() => {
             if (user.emailVerified) {
               document.getElementById("status").textContent = "✅ Verified! Redirecting...";
-              clearInterval(interval);
-              setTimeout(() => window.location.href = "index.html", 1500);
+              clearInterval(checkVerified);
+              setTimeout(() => {
+                window.location.href = "index.html";
+              }, 2000);
             }
           });
-        }, 5000);
+        }, 3000);
       } else {
-        document.getElementById("status").textContent = "❌ No user found. Please login.";
+        document.getElementById("status").textContent = "⚠️ No user found.";
       }
     });
-
-    function goToLogin() {
-      window.location.href = "login.html";
-    }
   </script>
 </body>
 </html>
