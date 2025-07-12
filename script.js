@@ -60,3 +60,21 @@ if (logoutBtn) {
     });
   });
 }
+
+function trackView(videoId) {
+  const user = firebase.auth().currentUser;
+  if (!user) return;
+
+  // Avoid counting every play event
+  if (window.viewedVideos && window.viewedVideos[videoId]) return;
+  window.viewedVideos = window.viewedVideos || {};
+  window.viewedVideos[videoId] = true;
+
+  // Wait 10 seconds before counting
+  setTimeout(() => {
+    firebase.firestore().collection("videos").doc(videoId).update({
+      views: firebase.firestore.FieldValue.increment(1)
+    });
+  }, 10000);
+}
+
