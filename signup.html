@@ -1,68 +1,61 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>VidEarn - Signup</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Signup – VidEarn</title>
+  <link rel="stylesheet" href="style.css">
 </head>
-<body class="light">
+<body>
   <nav>
-    <div class="logo">🎥 VidEarn</div>
-    <ul>
-      <li><a href="index.html">Home</a></li>
-      <li><a href="login.html">Login</a></li>
-      <li><button onclick="toggleTheme()">🌓 Theme</button></li>
-    </ul>
+    <div class="logo">VidEarn</div>
+    <ul id="nav-links"></ul>
   </nav>
-
   <main>
-    <h1>📝 Signup for VidEarn</h1>
+    <h2>Create Account</h2>
     <form id="signupForm">
-      <input type="email" id="email" placeholder="Email" required />
-      <input type="password" id="password" placeholder="Password" required />
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="password" id="password" placeholder="Password" required>
       <button type="submit">Signup</button>
     </form>
-    <p>Already have an account? <a href="login.html">Login here</a></p>
+    <p id="status"></p>
   </main>
 
-  <script src="script.js"></script>
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
+  <script src="script.js"></script>
 
- <script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyD4OiQMtKJdUz7Qcu6GyXKD-AwqA8MOE0o",
-    authDomain: "videarn-9b7f0.firebaseapp.com",
-    projectId: "videarn-9b7f0",
-    storageBucket: "videarn-9b7f0.firebasestorage.app",
-    messagingSenderId: "548163414285",
-    appId: "1:548163414285:web:48d29b47c9b0e112a66844",
-    measurementId: "G-VGNT49S5KV"
-  };
-  firebase.initializeApp(firebaseConfig);
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyD4OiQMtKJdUz7Qcu6GyXKD-AwqA8MOE0o",
+      authDomain: "videarn-9b7f0.firebaseapp.com",
+      projectId: "videarn-9b7f0",
+      storageBucket: "videarn-9b7f0.firebasestorage.app",
+      messagingSenderId: "548163414285",
+      appId: "1:548163414285:web:48d29b47c9b0e112a66844",
+      measurementId: "G-VGNT49S5KV"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
 
-  const auth = firebase.auth();
+    document.getElementById("signupForm").addEventListener("submit", e => {
+      e.preventDefault();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const status = document.getElementById("status");
 
-  document.getElementById("signupForm").addEventListener("submit", function (e) {
-    e.preventDefault();
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value.trim();
-
-    auth.createUserWithEmailAndPassword(email, password)
-      .then(userCredential => {
-        const user = userCredential.user;
-
-        user.sendEmailVerification().then(() => {
-          alert("✅ Signup successful! A verification email has been sent. Please check your inbox.");
-          window.location.href = "login.html";
+      auth.createUserWithEmailAndPassword(email, password)
+        .then(userCred => {
+          userCred.user.sendEmailVerification()
+            .then(() => {
+              status.textContent = "✅ Verification email sent. Please check your inbox.";
+              setTimeout(() => window.location.href = "login.html", 3000);
+            })
+            .catch(err => status.textContent = "❌ Failed to send verification email.");
+        })
+        .catch(error => {
+          status.textContent = "❌ Signup Error: " + error.message;
         });
-      })
-      .catch(error => {
-        alert("❌ Signup failed: " + error.message);
-      });
-  });
-</script>
-
+    });
+  </script>
 </body>
 </html>
