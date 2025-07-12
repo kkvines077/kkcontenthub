@@ -31,6 +31,10 @@
       font-size: 16px;
       cursor: pointer;
     }
+    .status {
+      margin-top: 20px;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -43,11 +47,44 @@
     <div class="email-icon">📬</div>
     <h2>Check Your Inbox</h2>
     <p>We've sent a verification email to your address.</p>
-    <p>Please verify your email before logging in.</p>
+    <p>Please verify your email before continuing.</p>
+    <p class="status" id="status">⏳ Waiting for verification...</p>
     <button class="btn" onclick="goToLogin()">Go to Login</button>
   </main>
 
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
   <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyD4OiQMtKJdUz7Qcu6GyXKD-AwqA8MOE0o",
+      authDomain: "videarn-9b7f0.firebaseapp.com",
+      projectId: "videarn-9b7f0",
+      storageBucket: "videarn-9b7f0.firebasestorage.app",
+      messagingSenderId: "548163414285",
+      appId: "1:548163414285:web:48d29b47c9b0e112a66844",
+      measurementId: "G-VGNT49S5KV"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // 🔁 Check if user is verified every 5 seconds
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        const interval = setInterval(() => {
+          user.reload().then(() => {
+            if (user.emailVerified) {
+              document.getElementById("status").textContent = "✅ Verified! Redirecting...";
+              clearInterval(interval);
+              setTimeout(() => window.location.href = "index.html", 1500);
+            }
+          });
+        }, 5000);
+      } else {
+        document.getElementById("status").textContent = "❌ No user found. Please login.";
+      }
+    });
+
     function goToLogin() {
       window.location.href = "login.html";
     }
