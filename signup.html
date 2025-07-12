@@ -1,35 +1,37 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Signup – VidEarn</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <nav>
-    <div class="logo">VidEarn</div>
-    <ul id="nav-links"></ul>
+    <div class="logo">🎥 VidEarn</div>
+    <ul class="nav-links">
+      <li><a href="index.html">🏠 Home</a></li>
+      <li><a href="login.html">Login</a></li>
+    </ul>
   </nav>
 
-  <main>
-    <h2>Create Your Account</h2>
+  <main class="slide-left">
+    <h1>Create Your Account</h1>
     <form id="signupForm">
-      <input type="email" id="email" placeholder="Email" required>
-      <input type="password" id="password" placeholder="Password" required>
-      <button type="submit">Signup</button>
+      <input type="email" id="email" placeholder="Email" required />
+      <input type="password" id="password" placeholder="Password" required />
+      <button type="submit" class="glow">Sign Up</button>
     </form>
 
-    <p>Didn't receive the email? <button id="resendBtn">Resend Verification Email</button></p>
+    <p><button id="resendBtn">🔁 Resend Verification</button></p>
     <p id="status"></p>
   </main>
 
-  <!-- ✅ Firebase SDKs -->
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
 
-  <!-- ✅ Your reusable theme toggle and navbar code -->
-  <script src="script.js"></script>
-
-  <!-- ✅ Firebase Config + Signup/Resend Logic -->
+  <!-- Script -->
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyD4OiQMtKJdUz7Qcu6GyXKD-AwqA8MOE0o",
@@ -42,47 +44,40 @@
     };
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
+
     let currentUser = null;
 
-    // ✅ Signup Form Handler
-    document.getElementById("signupForm").addEventListener("submit", e => {
+    document.getElementById("signupForm").addEventListener("submit", (e) => {
       e.preventDefault();
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value.trim();
-      const status = document.getElementById("status");
 
       auth.createUserWithEmailAndPassword(email, password)
-        .then(userCred => {
-          currentUser = userCred.user;
-          currentUser.sendEmailVerification()
-            .then(() => {
-              status.textContent = "✅ Verification email sent. Please check your inbox.";
-              setTimeout(() => window.location.href = "verify.html", 1000);
-
-            })
-            .catch(err => {
-              status.textContent = "❌ Could not send verification email.";
-            });
+        .then((userCredential) => {
+          currentUser = userCredential.user;
+          return currentUser.sendEmailVerification();
         })
-        .catch(error => {
-          status.textContent = "❌ Signup failed: " + error.message;
+        .then(() => {
+          document.getElementById("status").textContent = "📨 Verification email sent!";
+          setTimeout(() => window.location.href = "verify.html", 2000);
+        })
+        .catch((error) => {
+          document.getElementById("status").textContent = "❌ " + error.message;
         });
     });
 
-    // 🔁 Resend Verification Email
     document.getElementById("resendBtn").addEventListener("click", () => {
-      const status = document.getElementById("status");
-
-      if (auth.currentUser && !auth.currentUser.emailVerified) {
-        auth.currentUser.sendEmailVerification()
+      const user = auth.currentUser;
+      if (user && !user.emailVerified) {
+        user.sendEmailVerification()
           .then(() => {
-            status.textContent = "✅ Verification email resent!";
+            document.getElementById("status").textContent = "🔁 Verification email resent!";
           })
-          .catch(err => {
-            status.textContent = "❌ Error resending email: " + err.message;
+          .catch((error) => {
+            document.getElementById("status").textContent = "❌ " + error.message;
           });
       } else {
-        status.textContent = "⚠️ Signup first or email already verified.";
+        document.getElementById("status").textContent = "⚠️ Please sign up first.";
       }
     });
   </script>
