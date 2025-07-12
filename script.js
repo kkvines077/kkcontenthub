@@ -11,17 +11,18 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
-let confirmationResult = null;
 
 // Setup reCAPTCHA
 window.onload = () => {
   window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
     size: 'invisible',
     callback: (response) => {
-      // reCAPTCHA solved
+      // CAPTCHA solved
     }
   });
 };
+
+let confirmationResult; // Removed `= null`
 
 function sendOTP() {
   const phoneNumber = document.getElementById("phoneNumber").value;
@@ -31,7 +32,7 @@ function sendOTP() {
     .then((result) => {
       confirmationResult = result;
       document.getElementById("loginContainer").style.display = "none";
-      document.getElementById("otpContainer").style.display = "none";
+      document.getElementById("otpContainer").style.display = "block";
       document.getElementById("status").textContent = "📩 OTP Sent!";
     })
     .catch((error) => {
