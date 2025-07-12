@@ -63,8 +63,8 @@
       auth.signInWithPhoneNumber(phone, appVerifier)
         .then((result) => {
           confirmationResult = result;
-          document.getElementById("loginContainer").style.display = "block";
-          document.getElementById("otpContainer").style.display = "block";
+          document.getElementById("loginContainer").style.display = "null";
+          document.getElementById("otpContainer").style.display = "null";
           document.getElementById("status").textContent = "📩 OTP sent!";
         }).catch((error) => {
           document.getElementById("status").textContent = "❌ Error: " + error.message;
