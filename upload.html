@@ -7,34 +7,23 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <nav>
-    <div class="logo">🎥 VidEarn</div>
-    <ul class="nav-links">
-      <li><a href="index.html">🏠 Home</a></li>
-      <li><button onclick="logout()">Logout</button></li>
-    </ul>
-  </nav>
+  <main class="centered">
+    <h1>📤 Upload Your Video</h1>
 
-  <main class="slide-right">
-    <h1>🎬 Upload Your Video</h1>
-    <form id="uploadForm">
-      <input type="text" id="title" placeholder="Video Title" required />
-      <input type="file" id="videoFile" accept="video/*" required />
-      <button type="submit" class="glow">Upload</button>
-    </form>
-    <p id="uploadStatus"></p>
+    <input type="text" id="videoTitle" placeholder="Video Title" required />
+    <input type="file" id="videoFile" accept="video/*" required />
+    <button onclick="uploadVideo()">Upload</button>
+
+    <p id="status"></p>
+    <button onclick="logout()">Logout</button>
   </main>
-
-  <!-- ✅ Upload success popup -->
-  <div id="successPopup" class="popup">✅ Upload successful!</div>
 
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js"></script>
 
-  <!-- Script -->
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyD4OiQMtKJdUz7Qcu6GyXKD-AwqA8MOE0o",
@@ -49,42 +38,39 @@
     const auth = firebase.auth();
     const db = firebase.firestore();
     const storage = firebase.storage();
+  </script>
 
-    // Check login status
-    auth.onAuthStateChanged((user) => {
-      if (!user || !user.emailVerified) {
-        alert("⚠️ Please login and verify your email first.");
-        window.location.href = "login.html";
+  <script>
+    auth.onAuthStateChanged(user => {
+      if (!user) {
+        window.location.href = "index.html";
       }
     });
 
-    // Handle logout
     function logout() {
-      auth.signOut().then(() => window.location.href = "login.html");
+      auth.signOut().then(() => {
+        window.location.href = "index.html";
+      });
     }
 
-    // Upload form
-    document.getElementById("uploadForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-
+    async function uploadVideo() {
       const user = auth.currentUser;
-      if (!user) return;
-
-      const title = document.getElementById("title").value.trim();
+      const title = document.getElementById("videoTitle").value.trim();
       const file = document.getElementById("videoFile").files[0];
-      const uploadStatus = document.getElementById("uploadStatus");
+      const status = document.getElementById("status");
 
-      if (!file || !title) {
-        uploadStatus.textContent = "⚠️ Please fill all fields.";
+      if (!user || !file || !title) {
+        status.textContent = "❌ Please complete all fields.";
         return;
       }
 
-      const filePath = `videos/${user.uid}/${Date.now()}_${file.name}`;
-      const ref = storage.ref(filePath);
+      status.textContent = "⏳ Uploading...";
 
       try {
-        const snapshot = await ref.put(file);
-        const url = await snapshot.ref.getDownloadURL();
+        const filePath = `videos/${user.uid}_${Date.now()}_${file.name}`;
+        const storageRef = storage.ref().child(filePath);
+        await storageRef.put(file);
+        const url = await storageRef.getDownloadURL();
 
         await db.collection("videos").add({
           uid: user.uid,
@@ -94,19 +80,10 @@
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
 
-        showSuccessPopup();
-        uploadStatus.textContent = "✅ Uploaded successfully!";
-        document.getElementById("uploadForm").reset();
+        status.textContent = "✅ Video uploaded successfully!";
       } catch (err) {
-        uploadStatus.textContent = "❌ " + err.message;
+        status.textContent = "❌ Error: " + err.message;
       }
-    });
-
-    // Show popup
-    function showSuccessPopup() {
-      const popup = document.getElementById("successPopup");
-      popup.style.display = "block";
-      setTimeout(() => popup.style.display = "none", 3000);
     }
   </script>
 </body>
