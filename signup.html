@@ -9,21 +9,27 @@
     <div class="logo">VidEarn</div>
     <ul id="nav-links"></ul>
   </nav>
+
   <main>
-    <h2>Create Account</h2>
+    <h2>Create Your Account</h2>
     <form id="signupForm">
       <input type="email" id="email" placeholder="Email" required>
       <input type="password" id="password" placeholder="Password" required>
       <button type="submit">Signup</button>
     </form>
+
+    <p>Didn't receive the email? <button id="resendBtn">Resend Verification Email</button></p>
     <p id="status"></p>
   </main>
 
-  <!-- Firebase SDKs -->
+  <!-- ✅ Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
+
+  <!-- ✅ Your reusable theme toggle and navbar code -->
   <script src="script.js"></script>
 
+  <!-- ✅ Firebase Config + Signup/Resend Logic -->
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyD4OiQMtKJdUz7Qcu6GyXKD-AwqA8MOE0o",
@@ -36,7 +42,9 @@
     };
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
+    let currentUser = null;
 
+    // ✅ Signup Form Handler
     document.getElementById("signupForm").addEventListener("submit", e => {
       e.preventDefault();
       const email = document.getElementById("email").value.trim();
@@ -45,16 +53,36 @@
 
       auth.createUserWithEmailAndPassword(email, password)
         .then(userCred => {
-          userCred.user.sendEmailVerification()
+          currentUser = userCred.user;
+          currentUser.sendEmailVerification()
             .then(() => {
               status.textContent = "✅ Verification email sent. Please check your inbox.";
-              setTimeout(() => window.location.href = "login.html", 3000);
+              setTimeout(() => window.location.href = "login.html", 4000);
             })
-            .catch(err => status.textContent = "❌ Failed to send verification email.");
+            .catch(err => {
+              status.textContent = "❌ Could not send verification email.";
+            });
         })
         .catch(error => {
-          status.textContent = "❌ Signup Error: " + error.message;
+          status.textContent = "❌ Signup failed: " + error.message;
         });
+    });
+
+    // 🔁 Resend Verification Email
+    document.getElementById("resendBtn").addEventListener("click", () => {
+      const status = document.getElementById("status");
+
+      if (auth.currentUser && !auth.currentUser.emailVerified) {
+        auth.currentUser.sendEmailVerification()
+          .then(() => {
+            status.textContent = "✅ Verification email resent!";
+          })
+          .catch(err => {
+            status.textContent = "❌ Error resending email: " + err.message;
+          });
+      } else {
+        status.textContent = "⚠️ Signup first or email already verified.";
+      }
     });
   </script>
 </body>
