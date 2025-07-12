@@ -3,37 +3,86 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>VidEarn – Home</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>VidEarn – Login with Mobile</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <nav>
-    <div class="logo">🎥 VidEarn</div>
-    <ul class="nav-links" id="nav-links">
-      <li><button onclick="toggleTheme()">🌙 Theme</button></li>
-      <li><a href="login.html" id="loginBtn">Login</a></li>
-      <li><a href="signup.html" id="signupBtn">Signup</a></li>
-      <li><button id="logoutBtn" style="display:none;">Logout</button></li>
-    </ul>
-  </nav>
-<video 
-  src="${data.url}" 
-  controls 
-  onplay="trackWatch('${doc.id}')"
-  width="100%">
-</video>
+  <main class="centered">
+    <h1>📱 VidEarn Mobile Login</h1>
 
+    <div id="loginContainer">
+      <input type="text" id="phoneNumber" placeholder="+91XXXXXXXXXX" required />
+      <div id="recaptcha-container"></div>
+      <button onclick="sendOTP()">Send OTP</button>
+    </div>
 
+    <div id="otpContainer" style="display:none;">
+      <input type="text" id="otpCode" placeholder="Enter OTP" required />
+      <button onclick="verifyOTP()">Verify OTP</button>
+    </div>
 
-  <main class="slide-left">
-    <h1>Welcome to VidEarn</h1>
-    <p id="welcomeMessage">Earn by Uploading or Watching Videos</p>
-    <a href="upload.html" class="glow">🎬 Upload a Video</a>
+    <p id="status"></p>
   </main>
 
-  <!-- Firebase + Script -->
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
-  <script src="script.js"></script>
+
+  <!-- Firebase Config -->
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyD4OiQMtKJdUz7Qcu6GyXKD-AwqA8MOE0o",
+      authDomain: "videarn-9b7f0.firebaseapp.com",
+      projectId: "videarn-9b7f0",
+      storageBucket: "videarn-9b7f0.firebasestorage.app",
+      messagingSenderId: "548163414285",
+      appId: "1:548163414285:web:48d29b47c9b0e112a66844",
+      measurementId: "G-VGNT49S5KV"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+  </script>
+
+  <!-- Logic -->
+  <script>
+    let confirmationResult;
+
+    window.onload = () => {
+      window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+        size: 'invisible',
+        callback: (response) => {
+          // reCAPTCHA solved
+        }
+      });
+    };
+
+    function sendOTP() {
+      const phone = document.getElementById("phoneNumber").value;
+      const appVerifier = window.recaptchaVerifier;
+
+      auth.signInWithPhoneNumber(phone, appVerifier)
+        .then((result) => {
+          confirmationResult = result;
+          document.getElementById("loginContainer").style.display = "none";
+          document.getElementById("otpContainer").style.display = "block";
+          document.getElementById("status").textContent = "📩 OTP sent!";
+        }).catch((error) => {
+          document.getElementById("status").textContent = "❌ Error: " + error.message;
+        });
+    }
+
+    function verifyOTP() {
+      const code = document.getElementById("otpCode").value;
+      confirmationResult.confirm(code)
+        .then((result) => {
+          const user = result.user;
+          document.getElementById("status").textContent = "✅ Login successful!";
+          // Redirect or show next step
+          window.location.href = "upload.html";
+        }).catch((error) => {
+          document.getElementById("status").textContent = "❌ Invalid OTP";
+        });
+    }
+  </script>
 </body>
 </html>
