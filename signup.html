@@ -57,7 +57,8 @@
           currentUser.sendEmailVerification()
             .then(() => {
               status.textContent = "✅ Verification email sent. Please check your inbox.";
-              setTimeout(() => window.location.href = "login.html", 4000);
+              setTimeout(() => window.location.href = "verify.html", 1000);
+
             })
             .catch(err => {
               status.textContent = "❌ Could not send verification email.";
