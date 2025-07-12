@@ -77,4 +77,37 @@ function trackView(videoId) {
     });
   }, 10000);
 }
+let watched = {};
+
+function trackWatch(videoId) {
+  const user = firebase.auth().currentUser;
+  if (!user || watched[videoId]) return;
+
+  watched[videoId] = true;
+
+  let secondsWatched = 0;
+  const interval = setInterval(() => {
+    secondsWatched += 1;
+
+    if (secondsWatched === 30) {
+      clearInterval(interval);
+
+      // ✅ Save to Firestore
+      firebase.firestore().collection("watchlogs").add({
+        userId: user.uid,
+        videoId: videoId,
+        duration: secondsWatched,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
+
+      // ✅ Add reward point
+      firebase.firestore().collection("users").doc(user.uid).set({
+        coins: firebase.firestore.FieldValue.increment(1)
+      }, { merge: true });
+
+      console.log("🪙 Rewarded 1 coin to", user.uid);
+    }
+  }, 1000);
+}
+
 
