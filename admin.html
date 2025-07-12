@@ -47,6 +47,11 @@
 
   <script>
     const adminUID = "VAbdJc21exxT14dfuEjR8ZBfMqg2"; // Replace with your Firebase UID
+const adminUIDs = ["UID_1", "UID_2"];
+if (!user || !adminUIDs.includes(user.uid)) {
+  alert("Access denied");
+  window.location.href = "index.html";
+}
 
     auth.onAuthStateChanged(async (user) => {
       if (!user || user.uid !== adminUID) {
