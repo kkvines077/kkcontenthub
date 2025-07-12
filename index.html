@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VidEarn - Home</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="light">
+  <nav>
+    <div class="logo">🎥 VidEarn</div>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="upload.html">Upload</a></li>
+      <li><a href="myvideos.html">My Videos</a></li>
+      <li><a href="admin.html">Admin</a></li>
+      <li><a href="login.html">Login</a></li>
+      <li><a href="signup.html">Signup</a></li>
+      <li><button onclick="toggleTheme()">🌓 Theme</button></li>
+
+    </ul>
+  </nav>
+
+  <main>
+    <h1>📺 Watch & Earn</h1>
+    <div id="videoGallery" class="video-grid"></div>
+  </main>
+
+  <script src="script.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
+  <!-- Firebase Core SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js"></script>
+
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyD4OiQMtKJdUz7Qcu6GyXKD-AwqA8MOE0o",
+      authDomain: "videarn-9b7f0.firebaseapp.com",
+      projectId: "videarn-9b7f0",
+      storageBucket: "videarn-9b7f0.firebasestorage.app",
+      messagingSenderId: "548163414285",
+      appId: "1:548163414285:web:48d29b47c9b0e112a66844",
+      measurementId: "G-VGNT49S5KV"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    function loadVideos() {
+      const gallery = document.getElementById("videoGallery");
+      db.collection("videos").orderBy("timestamp", "desc").get()
+        .then(snapshot => {
+          snapshot.forEach(doc => {
+            const data = doc.data();
+            const card = document.createElement("div");
+            card.className = "video-card";
+            card.innerHTML = `
+              <video width="100%" controls src="${data.url}"></video>
+              <h3>${data.title}</h3>`;
+            gallery.appendChild(card);
+          });
+        });
+    }
+
+    window.addEventListener("DOMContentLoaded", loadVideos);
+  </script>
+</body>
+</html>

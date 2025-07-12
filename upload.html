@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VidEarn - Upload Video</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="light">
+  <nav>
+    <div class="logo">🎥 VidEarn</div>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="myvideos.html">My Videos</a></li>
+      <li><a href="admin.html">Admin</a></li>
+      <li><a href="login.html">Login</a></li>
+      <li><a href="signup.html">Signup</a></li>
+      <li><button onclick="toggleTheme()">🌓 Theme</button></li>
+    </ul>
+  </nav>
+
+  <main>
+    <h1>⬆️ Upload Your Video</h1>
+    <form id="uploadForm">
+      <input type="text" id="title" placeholder="Video Title" required />
+      <input type="file" id="videoFile" accept="video/*" required />
+      <button type="submit">Upload</button>
+    </form>
+    <div id="status"></div>
+  </main>
+
+  <script src="script.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-storage.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyD4OiQMtKJdUz7Qcu6GyXKD-AwqA8MOE0o",
+      authDomain: "videarn-9b7f0.firebaseapp.com",
+      projectId: "videarn-9b7f0",
+      storageBucket: "videarn-9b7f0.firebasestorage.app",
+      messagingSenderId: "548163414285",
+      appId: "1:548163414285:web:48d29b47c9b0e112a66844",
+      measurementId: "G-VGNT49S5KV"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    const storage = firebase.storage();
+
+    const form = document.getElementById("uploadForm");
+    const statusDiv = document.getElementById("status");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const title = document.getElementById("title").value;
+      const file = document.getElementById("videoFile").files[0];
+
+      if (!file) {
+        statusDiv.innerText = "❌ No file selected.";
+        return;
+      }
+
+      const user = auth.currentUser;
+      if (!user) {
+        alert("❌ Please login to upload.");
+        window.location.href = "login.html";
+        return;
+      }
+
+      const fileRef = storage.ref().child("videos/" + Date.now() + "_" + file.name);
+      const uploadTask = fileRef.put(file);
+
+      uploadTask.on("state_changed",
+        (snapshot) => {
+          statusDiv.innerText = `Uploading: ${Math.floor((snapshot.bytesTransferred / snapshot.totalBytes) * 100)}%`;
+        },
+        (error) => {
+          statusDiv.innerText = "❌ Upload failed: " + error.message;
+        },
+        async () => {
+          const url = await uploadTask.snapshot.ref.getDownloadURL();
+          await db.collection("videos").add({
+            title: title,
+            url: url,
+            uid: user.uid,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+          });
+          statusDiv.innerText = "✅ Upload complete!";
+          form.reset();
+        }
+      );
+    });
+  </script>
+</body>
+</html>

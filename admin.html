@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VidEarn - Admin Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="light">
+  <nav>
+    <div class="logo">🎥 VidEarn</div>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="upload.html">Upload</a></li>
+      <li><a href="myvideos.html">My Videos</a></li>
+      <li><a href="login.html">Login</a></li>
+      <li><a href="signup.html">Signup</a></li>
+      <li><button onclick="toggleTheme()">🌓 Theme</button></li>
+    </ul>
+
+  </nav>
+
+  <main>
+    <h1>📊 Admin Dashboard</h1>
+
+    <section>
+      <h2>🧾 Latest Videos</h2>
+      <div id="videoList" class="video-grid"></div>
+    </section>
+
+    <section>
+      <h2>💰 Recent Payments</h2>
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>From (Viewer ID)</th>
+            <th>To (Uploader ID)</th>
+            <th>Video ID</th>
+            <th>Amount (₹)</th>
+            <th>Time</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="paymentsTable"></tbody>
+      </table>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
+
+    <script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyD4OiQMtKJdUz7Qcu6GyXKD-AwqA8MOE0o",
+    authDomain: "videarn-9b7f0.firebaseapp.com",
+    projectId: "videarn-9b7f0",
+    storageBucket: "videarn-9b7f0.firebasestorage.app",
+    messagingSenderId: "548163414285",
+    appId: "1:548163414285:web:48d29b47c9b0e112a66844",
+    measurementId: "G-VGNT49S5KV"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+
+  const ADMIN_EMAIL = "kkvines077@gmail.com"; // 🔁 CHANGE THIS TO YOUR ADMIN EMAIL
+
+  auth.onAuthStateChanged(user => {
+    if (!user || user.email !== ADMIN_EMAIL) {
+      alert("❌ Access Denied: Admins only");
+      window.location.href = "index.html";
+    } else {
+      loadLatestVideos();
+      loadPayments();
+    }
+  });
+
+  function loadLatestVideos() {
+    const container = document.getElementById("videoList");
+    db.collection("videos").orderBy("timestamp", "desc").limit(10).get()
+      .then(snapshot => {
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const card = document.createElement("div");
+          card.className = "video-card";
+          card.innerHTML = `
+            <video width="100%" controls src="${data.url}"></video>
+            <h3>${data.title}</h3>
+            <button onclick="deleteVideo('${doc.id}')">🗑️ Delete</button>`;
+          container.appendChild(card);
+        });
+      });
+  }
+
+  function deleteVideo(docId) {
+    if (confirm("Are you sure you want to delete this video?")) {
+      db.collection("videos").doc(docId).delete()
+        .then(() => {
+          alert("✅ Video deleted");
+          location.reload();
+        })
+        .catch(error => alert("❌ Failed to delete video: " + error.message));
+    }
+  }
+
+  function loadPayments() {
+    const table = document.getElementById("paymentsTable");
+    db.collection("payments").orderBy("timestamp", "desc").limit(10).get()
+      .then(snapshot => {
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          const row = document.createElement("tr");
+          row.innerHTML = `
+            <td>${data.from}</td>
+            <td>${data.to}</td>
+            <td>${data.videoId}</td>
+            <td>₹${(data.amount || 0).toFixed(2)}</td>
+            <td>${data.timestamp?.toDate().toLocaleString() || ""}</td>
+            <td><button onclick="deletePayment('${doc.id}')">🗑️</button></td>`;
+          table.appendChild(row);
+        });
+      });
+  }
+
+  function deletePayment(docId) {
+    if (confirm("Delete this payment record?")) {
+      db.collection("payments").doc(docId).delete()
+        .then(() => {
+          alert("✅ Payment deleted");
+          location.reload();
+        })
+        .catch(error => alert("❌ Failed to delete: " + error.message));
+    }
+  }
+</script>
+</body>
+</html>
