@@ -31,7 +31,7 @@ function sendOTP() {
     .then((result) => {
       confirmationResult = result;
       document.getElementById("loginContainer").style.display = "none";
-      document.getElementById("otpContainer").style.display = "block";
+      document.getElementById("otpContainer").style.display = "none";
       document.getElementById("status").textContent = "📩 OTP Sent!";
     })
     .catch((error) => {
