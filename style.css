@@ -72,3 +72,19 @@ button:hover {
   font-weight: bold;
   min-height: 24px;
 }
+/* 🔄 Fade + Slide In Animation */
+@keyframes fadeSlide {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 👇 Apply to <main> */
+main {
+  animation: fadeSlide 0.8s ease-out both;
+}
