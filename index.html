@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>VidEarn – Login with Mobile</title>
+  <title>VidEarn – Mobile Login</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <main class="centered">
-    <h1>📱 VidEarn Mobile Login</h1>
+    <h1>📱 VidEarn Login</h1>
 
     <div id="loginContainer">
-      <input type="text" id="phoneNumber" placeholder="+91XXXXXXXXXX" required />
+      <input type="tel" id="phoneNumber" placeholder="+91XXXXXXXXXX" required />
       <div id="recaptcha-container"></div>
       <button onclick="sendOTP()">Send OTP</button>
     </div>
@@ -28,61 +28,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
 
-  <!-- Firebase Config -->
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyD4OiQMtKJdUz7Qcu6GyXKD-AwqA8MOE0o",
-      authDomain: "videarn-9b7f0.firebaseapp.com",
-      projectId: "videarn-9b7f0",
-      storageBucket: "videarn-9b7f0.firebasestorage.app",
-      messagingSenderId: "548163414285",
-      appId: "1:548163414285:web:48d29b47c9b0e112a66844",
-      measurementId: "G-VGNT49S5KV"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-  </script>
-
-  <!-- Logic -->
-  <script>
-    let confirmationResult;
-
-    window.onload = () => {
-      window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-        size: 'invisible',
-        callback: (response) => {
-          // reCAPTCHA solved
-        }
-      });
-    };
-
-    function sendOTP() {
-      const phone = document.getElementById("phoneNumber").value;
-      const appVerifier = window.recaptchaVerifier;
-
-      auth.signInWithPhoneNumber(phone, appVerifier)
-        .then((result) => {
-          confirmationResult = result;
-          document.getElementById("loginContainer").style.display = "null";
-          document.getElementById("otpContainer").style.display = "null";
-          document.getElementById("status").textContent = "📩 OTP sent!";
-        }).catch((error) => {
-          document.getElementById("status").textContent = "❌ Error: " + error.message;
-        });
-    }
-
-    function verifyOTP() {
-      const code = document.getElementById("otpCode").value;
-      confirmationResult.confirm(code)
-        .then((result) => {
-          const user = result.user;
-          document.getElementById("status").textContent = "✅ Login successful!";
-          // Redirect or show next step
-          window.location.href = "upload.html";
-        }).catch((error) => {
-          document.getElementById("status").textContent = "❌ Invalid OTP";
-        });
-    }
-  </script>
+  <!-- Script -->
+  <script src="script.js"></script>
 </body>
 </html>
