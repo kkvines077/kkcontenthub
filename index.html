@@ -3,41 +3,33 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>VidEarn – Login</title>
+  <title>VidEarn – Login via OTP</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <main class="centered">
     <h1>🔐 Login to VidEarn</h1>
 
-    <!-- Mobile Login Section -->
     <div id="loginContainer">
       <input type="tel" id="phoneNumber" placeholder="+91XXXXXXXXXX" required />
       <div id="recaptcha-container"></div>
       <button id="sendOtpBtn">Send OTP</button>
       <button id="resendOtpBtn" disabled>Resend OTP (30s)</button>
     </div>
-<div class="theme-toggle" onclick="toggleTheme()">🌓</div>
 
-    <!-- OTP Input -->
     <div id="otpContainer" style="display:none;">
       <input type="text" id="otpCode" placeholder="Enter OTP" required />
       <button id="verifyOtpBtn">Verify OTP</button>
     </div>
 
-    <hr/>
-
-    <!-- Google Sign-in -->
-    <button id="googleLoginBtn">Continue with Google</button>
-
     <p id="status"></p>
   </main>
 
-  <!-- Firebase Compat SDKs -->
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
-  <!-- Script -->
+  <!-- Your logic -->
   <script src="script.js"></script>
 </body>
 </html>
