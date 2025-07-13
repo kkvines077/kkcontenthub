@@ -1,4 +1,3 @@
-// Wait until page is fully loaded
 window.onload = function () {
   // Firebase Config
   const firebaseConfig = {
@@ -11,24 +10,22 @@ window.onload = function () {
     measurementId: "G-VGNT49S5KV"
   };
 
-  // Initialize Firebase
+  // ✅ Initialize Firebase
   firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
-
   let confirmationResult;
 
-  // Setup invisible reCAPTCHA
+  // Setup Invisible reCAPTCHA
   const recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
     size: 'invisible',
     callback: (response) => {
-      // reCAPTCHA solved
+      // CAPTCHA passed
     }
   });
 
-  // ✅ Send OTP
+  // Send OTP
   document.getElementById("sendOtpBtn").addEventListener("click", () => {
     const phoneNumber = document.getElementById("phoneNumber").value;
-
     auth.signInWithPhoneNumber(phoneNumber, recaptchaVerifier)
       .then((result) => {
         confirmationResult = result;
@@ -37,14 +34,13 @@ window.onload = function () {
         document.getElementById("status").textContent = "📩 OTP sent!";
       })
       .catch((error) => {
-        document.getElementById("status").textContent = "❌ Error: " + error.message;
+        document.getElementById("status").textContent = "❌ " + error.message;
       });
   });
 
-  // ✅ Verify OTP
+  // Verify OTP
   document.getElementById("verifyOtpBtn").addEventListener("click", () => {
     const otpCode = document.getElementById("otpCode").value;
-
     confirmationResult.confirm(otpCode)
       .then((result) => {
         document.getElementById("status").textContent = "✅ Login Successful!";
