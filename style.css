@@ -1,37 +1,26 @@
 body {
   font-family: Arial, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  transition: background 0.3s ease, color 0.3s ease;
-}
-
-:root {
-  --bg: #ffffff;
-  --text: #000000;
-}
-
-body.dark {
-  --bg: #121212;
-  --text: #ffffff;
+  background: #f0f0f0;
+  color: #111;
 }
 
 .centered {
   max-width: 400px;
   margin: auto;
   padding: 20px;
-  animation: fadeIn 0.8s ease;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 1; transform: translateY(0); }
+  background: white;
+  margin-top: 40px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
 input, button {
   display: block;
   width: 100%;
-  margin: 10px 0;
-  padding: 10px;
+  margin: 12px 0;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 6px;
 }
 
 button {
@@ -39,16 +28,8 @@ button {
   color: white;
   border: none;
   cursor: pointer;
-  transition: 0.3s;
 }
 
-button:hover {
-  background-color: #003bb5;
-}
-
-.theme-toggle {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  cursor: pointer;
+button:disabled {
+  background-color: #aaa;
 }
