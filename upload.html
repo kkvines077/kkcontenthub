@@ -1,39 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Upload | VidEarn</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>StreamEarn – Upload Video</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  
   <main class="centered">
-    <h1>🎥 Upload Video</h1>
+    <h2>📤 Upload Your Video</h2>
 
     <input type="text" id="title" placeholder="Video Title" required />
-    <input type="file" id="videoFile" accept="video/*" />
+    <input type="file" id="file" accept="video/*" required />
     <button onclick="uploadVideo()">Upload</button>
-    <button id="logoutBtn" style="display:none;" onclick="logout()">Logout</button>
-
 
     <p id="status"></p>
+    <button onclick="logout()">🚪 Logout</button>
   </main>
 
-  <!-- Firebase -->
+  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  firebase.auth().onAuthStateChanged((user) => {
-  if (!user) {
-    alert("Please log in first.");
-    window.location.href = "login.html";
-  } else {
-    document.getElementById("logoutBtn").style.display = "inline-block";
-  }
-});
-
 
   <script>
     const firebaseConfig = {
@@ -42,61 +31,54 @@
       projectId: "videarn-9b7f0",
       storageBucket: "videarn-9b7f0.firebasestorage.app",
       messagingSenderId: "548163414285",
-      appId: "1:548163414285:web:48d29b47c9b0e112a66844",
-      measurementId: "G-VGNT49S5KV"
+      appId: "1:548163414285:web:48d29b47c9b0e112a66844"
     };
 
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
-    const db = firebase.firestore();
     const storage = firebase.storage();
+    const db = firebase.firestore();
 
-    let currentUser;
-
-    auth.onAuthStateChanged((user) => {
+    auth.onAuthStateChanged(user => {
       if (!user) {
-        alert("You must login first.");
-        window.location.href = "index.html";
-      } else {
-        currentUser = user;
-        saveUser(user); // store to Firestore
+        alert("❌ Please log in first.");
+        window.location.href = "signup.html";
       }
     });
 
-    function saveUser(user) {
-      const userRef = db.collection("users").doc(user.uid);
-      const userData = {
-        uid: user.uid,
-        email: user.email || null,
-        phone: user.phoneNumber || null,
-        name: user.displayName || null,
-        lastLogin: new Date()
-      };
-      userRef.set(userData, { merge: true });
-    }
-
-    async function uploadVideo() {
+    function uploadVideo() {
+      const user = auth.currentUser;
+      const file = document.getElementById("file").files[0];
       const title = document.getElementById("title").value;
-      const file = document.getElementById("videoFile").files[0];
 
-      if (!title || !file) {
-        alert("Title and file are required");
+      if (!file || !title) {
+        alert("Please enter a title and choose a video.");
         return;
       }
 
-      const fileRef = storage.ref().child("videos/" + Date.now() + "_" + file.name);
-      const snapshot = await fileRef.put(file);
-      const url = await snapshot.ref.getDownloadURL();
-
-      await db.collection("videos").add({
-        title,
-        url,
-        uid: currentUser.uid,
-        views: 0,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      const storageRef = storage.ref(`videos/${user.uid}/${file.name}`);
+      storageRef.put(file).then(snapshot => {
+        return snapshot.ref.getDownloadURL();
+      }).then(url => {
+        return db.collection("videos").add({
+          title: title,
+          url: url,
+          uid: user.uid,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          views: 0,
+          watchTime: 0
+        });
+      }).then(() => {
+        document.getElementById("status").textContent = "✅ Video uploaded successfully!";
+      }).catch(error => {
+        alert("Upload failed: " + error.message);
       });
+    }
 
-      document.getElementById("status").textContent = "✅ Video uploaded!";
+    function logout() {
+      auth.signOut().then(() => {
+        window.location.href = "index.html";
+      });
     }
   </script>
 </body>
