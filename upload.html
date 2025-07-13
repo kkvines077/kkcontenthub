@@ -7,12 +7,15 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  
   <main class="centered">
     <h1>🎥 Upload Video</h1>
 
     <input type="text" id="title" placeholder="Video Title" required />
     <input type="file" id="videoFile" accept="video/*" />
     <button onclick="uploadVideo()">Upload</button>
+    <button id="logoutBtn" style="display:none;" onclick="logout()">Logout</button>
+
 
     <p id="status"></p>
   </main>
