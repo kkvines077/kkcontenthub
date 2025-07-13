@@ -76,3 +76,10 @@ window.onload = function () {
       });
   });
 };
+function logout() {
+  firebase.auth().signOut().then(() => {
+    alert("Logged out");
+    window.location.href = "index.html";
+  });
+}
+
