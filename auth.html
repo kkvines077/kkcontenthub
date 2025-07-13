@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login | VidEarn</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="centered">
+    <h1>🔐 Login with Google</h1>
+    <button id="googleBtn">Continue with Google</button>
+    <p id="status"></p>
+  </main>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyD4OiQMtKJdUz7Qcu6GyXKD-AwqA8MOE0o",
+      authDomain: "videarn-9b7f0.firebaseapp.com",
+      projectId: "videarn-9b7f0",
+      storageBucket: "videarn-9b7f0.firebasestorage.app",
+      messagingSenderId: "548163414285",
+      appId: "1:548163414285:web:48d29b47c9b0e112a66844"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    document.getElementById("googleBtn").addEventListener("click", () => {
+      const provider = new firebase.auth.GoogleAuthProvider();
+      auth.signInWithPopup(provider)
+        .then((result) => {
+          const user = result.user;
+          db.collection("users").doc(user.uid).set({
+            uid: user.uid,
+            email: user.email,
+            name: user.displayName,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          }, { merge: true });
+          document.getElementById("status").textContent = "✅ Login successful!";
+          window.location.href = "upload.html";
+        })
+        .catch((err) => {
+          document.getElementById("status").textContent = "❌ " + err.message;
+        });
+    });
+  </script>
+</body>
+</html>
