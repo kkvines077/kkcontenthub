@@ -11,11 +11,9 @@ window.onload = function () {
 
   firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
-  const db = firebase.firestore();
-
   let confirmationResult;
 
-  // Setup reCAPTCHA
+  // Setup invisible reCAPTCHA
   window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
     size: 'invisible',
     callback: () => {}
@@ -38,7 +36,6 @@ window.onload = function () {
     }, 1000);
   }
 
-  // Send OTP
   document.getElementById("sendOtpBtn").addEventListener("click", () => {
     const phoneNumber = document.getElementById("phoneNumber").value;
     const appVerifier = window.recaptchaVerifier;
@@ -46,7 +43,7 @@ window.onload = function () {
     auth.signInWithPhoneNumber(phoneNumber, appVerifier)
       .then((result) => {
         confirmationResult = result;
-        document.getElementById("signupContainer").style.display = "none";
+        document.getElementById("loginContainer").style.display = "none";
         document.getElementById("otpContainer").style.display = "block";
         document.getElementById("status").textContent = "📩 OTP sent!";
         startCooldown();
@@ -56,44 +53,19 @@ window.onload = function () {
       });
   });
 
-  // Verify OTP & Signup
+  document.getElementById("resendOtpBtn").addEventListener("click", () => {
+    document.getElementById("sendOtpBtn").click();
+  });
+
   document.getElementById("verifyOtpBtn").addEventListener("click", () => {
     const code = document.getElementById("otpCode").value;
     confirmationResult.confirm(code)
       .then((result) => {
-        const user = result.user;
-        db.collection("users").doc(user.uid).set({
-          uid: user.uid,
-          phone: user.phoneNumber,
-          signupMethod: "Phone",
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        document.getElementById("status").textContent = "✅ Signed up!";
+        document.getElementById("status").textContent = "✅ Login successful!";
         window.location.href = "upload.html";
       })
       .catch((error) => {
-        document.getElementById("status").textContent = "❌ OTP Error: " + error.message;
-      });
-  });
-
-  // Google Signup
-  document.getElementById("googleSignupBtn").addEventListener("click", () => {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    auth.signInWithPopup(provider)
-      .then((result) => {
-        const user = result.user;
-        db.collection("users").doc(user.uid).set({
-          uid: user.uid,
-          email: user.email,
-          name: user.displayName,
-          signupMethod: "Google",
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        document.getElementById("status").textContent = "✅ Signed up with Google!";
-        window.location.href = "upload.html";
-      })
-      .catch((error) => {
-        document.getElementById("status").textContent = "❌ Google Signup Error: " + error.message;
+        document.getElementById("status").textContent = "❌ Invalid OTP";
       });
   });
 };
