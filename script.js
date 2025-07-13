@@ -8,6 +8,16 @@ window.onload = function () {
     appId: "1:548163414285:web:48d29b47c9b0e112a66844",
     measurementId: "G-VGNT49S5KV"
   };
+// Dark/Light Theme Toggle
+function toggleTheme() {
+  document.body.classList.toggle("dark");
+  localStorage.setItem("theme", document.body.classList.contains("dark") ? "dark" : "light");
+}
+
+if (localStorage.getItem("theme") === "dark") {
+  document.body.classList.add("dark");
+}
+
 
   firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
