@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>VidEarn – Mobile Login</title>
-  <link rel="stylesheet" href="style.css">
+  <title>VidEarn – Login via OTP</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <main class="centered">
@@ -13,12 +13,12 @@
     <div id="loginContainer">
       <input type="tel" id="phoneNumber" placeholder="+91XXXXXXXXXX" required />
       <div id="recaptcha-container"></div>
-      <button onclick="sendOTP()">Send OTP</button>
+      <button id="sendOtpBtn">Send OTP</button>
     </div>
 
     <div id="otpContainer" style="display:none;">
       <input type="text" id="otpCode" placeholder="Enter OTP" required />
-      <button onclick="verifyOTP()">Verify OTP</button>
+      <button id="verifyOtpBtn">Verify OTP</button>
     </div>
 
     <p id="status"></p>
@@ -28,7 +28,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
 
-  <!-- Script -->
+  <!-- Your Script -->
   <script src="script.js"></script>
 </body>
 </html>
