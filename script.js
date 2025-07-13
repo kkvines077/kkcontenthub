@@ -1,5 +1,4 @@
 window.onload = function () {
-  // Firebase Config
   const firebaseConfig = {
     apiKey: "AIzaSyD4OiQMtKJdUz7Qcu6GyXKD-AwqA8MOE0o",
     authDomain: "videarn-9b7f0.firebaseapp.com",
@@ -10,17 +9,14 @@ window.onload = function () {
     measurementId: "G-VGNT49S5KV"
   };
 
-  // ✅ Initialize Firebase
   firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
   let confirmationResult;
+  let resendTimer;
 
-  // Setup Invisible reCAPTCHA
+  // Setup invisible reCAPTCHA
   const recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-    size: 'invisible',
-    callback: (response) => {
-      // CAPTCHA passed
-    }
+    size: 'invisible'
   });
 
   // Send OTP
@@ -32,10 +28,16 @@ window.onload = function () {
         document.getElementById("loginContainer").style.display = "none";
         document.getElementById("otpContainer").style.display = "block";
         document.getElementById("status").textContent = "📩 OTP sent!";
+        startResendCooldown();
       })
       .catch((error) => {
         document.getElementById("status").textContent = "❌ " + error.message;
       });
+  });
+
+  // Resend OTP
+  document.getElementById("resendOtpBtn").addEventListener("click", () => {
+    document.getElementById("sendOtpBtn").click();
   });
 
   // Verify OTP
@@ -50,4 +52,36 @@ window.onload = function () {
         document.getElementById("status").textContent = "❌ Invalid OTP.";
       });
   });
+
+  // Google Sign-in
+  document.getElementById("googleLoginBtn").addEventListener("click", () => {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    auth.signInWithPopup(provider)
+      .then((result) => {
+        document.getElementById("status").textContent = "✅ Logged in with Google!";
+        window.location.href = "upload.html";
+      })
+      .catch((error) => {
+        document.getElementById("status").textContent = "❌ Google Login Error: " + error.message;
+      });
+  });
+
+  // Resend OTP cooldown
+  function startResendCooldown() {
+    let seconds = 30;
+    const btn = document.getElementById("resendOtpBtn");
+    btn.disabled = true;
+    btn.textContent = `Resend OTP (${seconds}s)`;
+
+    resendTimer = setInterval(() => {
+      seconds--;
+      if (seconds > 0) {
+        btn.textContent = `Resend OTP (${seconds}s)`;
+      } else {
+        clearInterval(resendTimer);
+        btn.disabled = false;
+        btn.textContent = "Resend OTP";
+      }
+    }, 1000);
+  }
 };
