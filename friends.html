@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Friends - Smart Chat</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="auth-container">
+    <h2>Your Friends</h2>
+    <input type="text" id="newFriend" placeholder="Add friend by name">
+    <button onclick="addFriend()">Add Friend</button>
+    <div id="friendList"></div>
+    <p><a href="login.html" onclick="logout()">Logout</a></p>
+  </div>
+
+  <script src="auth.js"></script>
+  <script src="data.js"></script>
+  <script>
+    displayFriends();
+
+    function displayFriends() {
+      const list = document.getElementById("friendList");
+      const friends = JSON.parse(localStorage.getItem("friends")) || [];
+      list.innerHTML = "";
+
+      friends.forEach(name => {
+        const btn = document.createElement("button");
+        btn.textContent = name;
+        btn.onclick = () => {
+          localStorage.setItem("chatWith", name);
+          window.location.href = "index.html";
+        };
+        list.appendChild(btn);
+      });
+    }
+
+    function addFriend() {
+      const name = document.getElementById("newFriend").value.trim();
+      if (!name) return alert("Enter a name");
+      let friends = JSON.parse(localStorage.getItem("friends")) || [];
+      if (!friends.includes(name)) {
+        friends.push(name);
+        localStorage.setItem("friends", JSON.stringify(friends));
+      }
+      displayFriends();
+    }
+  </script>
+</body>
+</html>
