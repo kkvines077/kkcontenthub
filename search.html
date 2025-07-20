@@ -1,0 +1,49 @@
+<!-- search.html -->
+<input id="searchEmail" placeholder="Search by email">
+<button onclick="searchUser()">Search</button>
+<div id="result"></div>
+
+<script type="module">
+  import { auth, db } from './firebase.js';
+  import { collection, query, where, getDocs, doc, updateDoc, arrayUnion } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+  import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+
+  let currentUser;
+
+  onAuthStateChanged(auth, (user) => {
+    if (user) currentUser = user;
+  });
+
+  async function searchUser() {
+    const email = document.getElementById('searchEmail').value;
+    const q = query(collection(db, "users"), where("email", "==", email));
+    const snap = await getDocs(q);
+    
+    if (snap.empty) return document.getElementById('result').innerText = "No user found";
+
+    const data = snap.docs[0].data();
+    const targetUID = snap.docs[0].id;
+
+    document.getElementById('result').innerHTML = `
+      <img src="${data.photoURL}" width="60"><br>
+      Name: ${data.name}<br>
+      Bio: ${data.bio}<br>
+      <button onclick="sendRequest('${targetUID}')">Send Friend Request</button>
+    `;
+  }
+
+  async function sendRequest(toUID) {
+    if (!currentUser) return;
+
+    await updateDoc(doc(db, "users", toUID), {
+      friendRequests: arrayUnion(currentUser.uid)
+    });
+
+    await updateDoc(doc(db, "users", currentUser.uid), {
+      sentRequests: arrayUnion(toUID)
+    });
+
+    alert("Friend request sent!");
+  }
+                        </script>
+                        
