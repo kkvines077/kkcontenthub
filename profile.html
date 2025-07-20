@@ -1,0 +1,32 @@
+<!-- profile.html -->
+<input id="name" placeholder="Your name">
+<input id="bio" placeholder="Short bio">
+<input id="photo" placeholder="Profile image URL">
+<button onclick="saveProfile()">Save Profile</button>
+
+<script type="module">
+  import { auth, db } from './firebase.js';
+  import { doc, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+  import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+
+  function saveProfile() {
+    const name = document.getElementById('name').value;
+    const bio = document.getElementById('bio').value;
+    const photoURL = document.getElementById('photo').value;
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        await setDoc(doc(db, "users", user.uid), {
+          uid: user.uid,
+          email: user.email,
+          name, bio, photoURL,
+          friends: [],
+          friendRequests: [],
+          sentRequests: []
+        });
+        alert("Profile saved!");
+      }
+    });
+  }
+          </script>
+          
