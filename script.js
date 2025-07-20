@@ -2,11 +2,22 @@ const chatBox = document.getElementById("chatBox");
 const messageInput = document.getElementById("messageInput");
 const suggestionsBox = document.getElementById("suggestions");
 
+const currentFriend = localStorage.getItem("chatWith") || "Default";
+
+function loadMessages() {
+  const messages = JSON.parse(localStorage.getItem("chat_" + currentFriend)) || [];
+  chatBox.innerHTML = "";
+  messages.forEach(msg => {
+    appendMessage(msg.text, msg.sender);
+  });
+}
+
 function sendMessage() {
   const msg = messageInput.value.trim();
   if (msg === "") return;
 
   appendMessage(msg, "user");
+  saveMessage(msg, "user");
   messageInput.value = "";
   showSmartReplies(msg);
 }
@@ -19,6 +30,12 @@ function appendMessage(msg, sender) {
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
+function saveMessage(msg, sender) {
+  let messages = JSON.parse(localStorage.getItem("chat_" + currentFriend)) || [];
+  messages.push({ text: msg, sender });
+  localStorage.setItem("chat_" + currentFriend, JSON.stringify(messages));
+}
+
 function showSmartReplies(input) {
   suggestionsBox.innerHTML = "";
 
@@ -29,30 +46,11 @@ function showSmartReplies(input) {
     btn.innerText = reply;
     btn.onclick = () => {
       appendMessage(reply, "bot");
+      saveMessage(reply, "bot");
       suggestionsBox.innerHTML = "";
     };
     suggestionsBox.appendChild(btn);
   });
 }
 
-function generateSuggestions(text) {
-  const emojiMap = {
-    "😊": ["Glad to hear that!", "You're awesome!", "Stay happy!"],
-    "😢": ["Don't worry, things get better!", "I'm here for you."],
-    "❤️": ["Love you too!", "Sending love!", "So sweet!"],
-  };
-
-  if (emojiMap[text]) {
-    return emojiMap[text];
-  }
-
-  if (text.toLowerCase().includes("hello")) return ["Hi!", "Hello!", "Hey there!"];
-  if (text.toLowerCase().includes("how are you")) return ["I'm great! You?", "Doing well, thanks!"];
-  if (text.toLowerCase().includes("bye")) return ["Goodbye!", "Take care!", "See you soon!"];
-
-  return ["That's interesting!", "Tell me more!", "Really?"];
-}
-function logout() {
-  localStorage.removeItem("isLoggedIn");
-  window.location.href = "login.html";
-}
+loadMessages();
