@@ -1,7 +1,8 @@
+checkLogin();
+
 const chatBox = document.getElementById("chatBox");
 const messageInput = document.getElementById("messageInput");
 const suggestionsBox = document.getElementById("suggestions");
-
 const currentFriend = localStorage.getItem("chatWith") || "Default";
 
 function loadMessages() {
@@ -38,9 +39,7 @@ function saveMessage(msg, sender) {
 
 function showSmartReplies(input) {
   suggestionsBox.innerHTML = "";
-
   let suggestions = generateSuggestions(input);
-
   suggestions.forEach(reply => {
     const btn = document.createElement("button");
     btn.innerText = reply;
