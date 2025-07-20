@@ -1,90 +1,115 @@
+<!-- chat.html (updated for selected friend chats) -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Smart Chat</title>
-  <link rel="stylesheet" href="style.css" />
+  <style>
+    body { font-family: sans-serif; }
+    #chatBox { border: 1px solid #ccc; height: 300px; overflow-y: scroll; padding: 10px; }
+    .message { margin: 5px 0; }
+  </style>
 </head>
 <body>
-  <div class="chat-container">
-    <h2>Smart Chat 💬</h2>
-
-    <select id="friendSelect">
-      <option value="">Select a Friend</option>
-      <option value="FRIEND_UID_1">Friend 1</option>
-      <option value="FRIEND_UID_2">Friend 2</option>
-      <!-- You can dynamically load users here -->
-    </select>
-
-    <div id="chatBox" class="chat-box"></div>
-
-    <div class="smart-replies" id="smartReplies"></div>
-
-    <input type="text" id="messageInput" placeholder="Type a message..." />
-    <button id="sendBtn">Send</button>
+  <h2>Smart Chat</h2>
+  <div>
+    <label for="friendSelect">Choose a friend:</label>
+    <select id="friendSelect"></select>
   </div>
 
+  <div id="chatBox"></div>
+  <input id="msgInput" placeholder="Type a message...">
+  <button onclick="sendMessage()">Send</button>
+
+  <div><b>Suggested Reply:</b> <span id="smartReply"></span></div>
+
   <script type="module">
-    import { auth } from './firebase.js';
-    import { sendMessage, listenForMessages } from './chat.js';
+    import { db, auth } from './firebase.js';
+    import {
+      doc, getDoc, setDoc, onSnapshot, updateDoc, arrayUnion
+    } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+    import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
 
-    const messageInput = document.getElementById('messageInput');
-    const sendBtn = document.getElementById('sendBtn');
-    const chatBox = document.getElementById('chatBox');
-    const smartReplies = document.getElementById('smartReplies');
-    const friendSelect = document.getElementById('friendSelect');
+    let currentUser, selectedFriend;
 
-    let selectedFriendUID = "";
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) return alert("Login required");
+      currentUser = user;
+      const snap = await getDoc(doc(db, "users", user.uid));
+      const friends = snap.data().friends || [];
 
-    friendSelect.addEventListener('change', () => {
-      selectedFriendUID = friendSelect.value;
-      chatBox.innerHTML = '';
-      if (selectedFriendUID) {
-        listenForMessages(selectedFriendUID, (messages) => {
-          chatBox.innerHTML = '';
-          messages.forEach(msg => {
-            const div = document.createElement('div');
-            div.className = msg.from === auth.currentUser.uid ? 'my-msg' : 'friend-msg';
-            div.innerText = msg.text;
-            chatBox.appendChild(div);
-          });
-          chatBox.scrollTop = chatBox.scrollHeight;
-        });
+      for (let uid of friends) {
+        const fSnap = await getDoc(doc(db, "users", uid));
+        const fData = fSnap.data();
+        const option = document.createElement("option");
+        option.value = uid;
+        option.textContent = fData.name;
+        document.getElementById("friendSelect").appendChild(option);
       }
+
+      document.getElementById("friendSelect").onchange = loadChat;
     });
 
-    sendBtn.addEventListener('click', async () => {
-      const text = messageInput.value.trim();
-      if (text && selectedFriendUID) {
-        await sendMessage(text, selectedFriendUID);
-        messageInput.value = '';
-        detectEmojiAndSuggest(text);
-      }
-    });
-
-    function detectEmojiAndSuggest(text) {
-      let suggestions = [];
-
-      if (text.includes('😊')) suggestions = ["Glad to hear!", "That's nice!", "You're awesome!"];
-      else if (text.includes('😢')) suggestions = ["I'm here for you", "Everything will be okay", "Sending hugs"];
-      else if (text.includes('❤️')) suggestions = ["Love you too!", "That's sweet", "Much love!"];
-      else if (text.includes('?')) suggestions = ["Yes!", "No", "Maybe!", "I'll check and tell you"];
-      else if (text.length < 6) suggestions = ["Tell me more", "Go on...", "Hmm?"];
-
-      showSmartReplies(suggestions);
+    function chatPath(uid1, uid2) {
+      return uid1 < uid2 ? `${uid1}_${uid2}` : `${uid2}_${uid1}`;
     }
 
-    function showSmartReplies(suggestions) {
-      smartReplies.innerHTML = '';
-      suggestions.forEach(text => {
-        const btn = document.createElement('button');
-        btn.innerText = text;
-        btn.onclick = () => {
-          messageInput.value = text;
-        };
-        smartReplies.appendChild(btn);
+    let unsubscribe = null;
+
+    async function loadChat() {
+      selectedFriend = document.getElementById("friendSelect").value;
+      if (!selectedFriend) return;
+
+      const path = chatPath(currentUser.uid, selectedFriend);
+      if (unsubscribe) unsubscribe();
+
+      unsubscribe = onSnapshot(doc(db, "chats", path), (docSnap) => {
+        const data = docSnap.exists() ? docSnap.data().messages : [];
+        const chatBox = document.getElementById("chatBox");
+        chatBox.innerHTML = '';
+        for (let msg of data) {
+          const div = document.createElement("div");
+          div.className = 'message';
+          div.textContent = `${msg.senderName}: ${msg.text}`;
+          chatBox.appendChild(div);
+          generateSmartReply(msg.text);
+        }
       });
+    }
+
+    async function sendMessage() {
+      const text = document.getElementById("msgInput").value;
+      if (!text || !selectedFriend) return;
+
+      const path = chatPath(currentUser.uid, selectedFriend);
+      const chatRef = doc(db, "chats", path);
+      const chatSnap = await getDoc(chatRef);
+      const newMsg = {
+        sender: currentUser.uid,
+        senderName: currentUser.email,
+        text,
+        timestamp: Date.now()
+      };
+
+      if (chatSnap.exists()) {
+        await updateDoc(chatRef, { messages: arrayUnion(newMsg) });
+      } else {
+        await setDoc(chatRef, { messages: [newMsg] });
+      }
+      document.getElementById("msgInput").value = '';
+    }
+
+    function generateSmartReply(msg) {
+      let reply = '';
+      if (msg.includes("😊")) reply = "Glad to hear that!";
+      else if (msg.includes("😢")) reply = "I'm here for you.";
+      else if (msg.toLowerCase().includes("hello")) reply = "Hi! How are you?";
+      else if (msg.toLowerCase().includes("bye")) reply = "Talk to you later!";
+      else if (msg.toLowerCase().includes("thank")) reply = "You're welcome!";
+      else reply = "Tell me more...";
+
+      document.getElementById("smartReply").textContent = reply;
     }
   </script>
 </body>
