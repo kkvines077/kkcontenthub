@@ -52,3 +52,7 @@ function generateSuggestions(text) {
 
   return ["That's interesting!", "Tell me more!", "Really?"];
 }
+function logout() {
+  localStorage.removeItem("isLoggedIn");
+  window.location.href = "login.html";
+}
