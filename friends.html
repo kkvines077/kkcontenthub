@@ -1,49 +1,48 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Friends - Smart Chat</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <div class="auth-container">
-    <h2>Your Friends</h2>
-    <input type="text" id="newFriend" placeholder="Add friend by name">
-    <button onclick="addFriend()">Add Friend</button>
-    <div id="friendList"></div>
-    <p><a href="login.html" onclick="logout()">Logout</a></p>
-  </div>
+<!-- friends.html -->
+<h3>Friend Requests</h3>
+<div id="requests"></div>
 
-  <script src="auth.js"></script>
-  <script>
-    function displayFriends() {
-      const list = document.getElementById("friendList");
-      const friends = JSON.parse(localStorage.getItem("friends")) || [];
-      list.innerHTML = "";
-      friends.forEach(name => {
-        const btn = document.createElement("button");
-        btn.textContent = name;
-        btn.onclick = () => {
-          localStorage.setItem("chatWith", name);
-          window.location.href = "index.html";
-        };
-        list.appendChild(btn);
+<script type="module">
+  import { auth, db } from './firebase.js';
+  import {
+    doc, getDoc, updateDoc, arrayRemove, arrayUnion
+  } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+  import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) return;
+
+    const userDoc = await getDoc(doc(db, "users", user.uid));
+    const data = userDoc.data();
+    const requests = data.friendRequests;
+
+    let html = '';
+
+    for (let uid of requests) {
+      const friendDoc = await getDoc(doc(db, "users", uid));
+      const friend = friendDoc.data();
+
+      html += `
+        <div>
+          <b>${friend.name}</b>
+          <button onclick="acceptRequest('${uid}')">Accept</button>
+        </div>
+      `;
+    }
+
+    document.getElementById('requests').innerHTML = html;
+
+    window.acceptRequest = async (uid) => {
+      await updateDoc(doc(db, "users", user.uid), {
+        friends: arrayUnion(uid),
+        friendRequests: arrayRemove(uid)
       });
-    }
-
-    function addFriend() {
-      const name = document.getElementById("newFriend").value.trim();
-      if (!name) return alert("Enter a name");
-      let friends = JSON.parse(localStorage.getItem("friends")) || [];
-      if (!friends.includes(name)) {
-        friends.push(name);
-        localStorage.setItem("friends", JSON.stringify(friends));
-      }
-      displayFriends();
-    }
-
-    displayFriends();
-  </script>
-</body>
-</html>
+      await updateDoc(doc(db, "users", uid), {
+        friends: arrayUnion(user.uid),
+        sentRequests: arrayRemove(user.uid)
+      });
+      alert("Friend added!");
+      location.reload();
+    };
+  });
+</script>
