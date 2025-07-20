@@ -1,19 +1,29 @@
+<!-- login.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login - Smart Chat</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Login</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="auth-container">
-    <h2>Login</h2>
-    <input type="email" id="loginEmail" placeholder="Email" />
-    <input type="password" id="loginPassword" placeholder="Password" />
-    <button onclick="login()">Login</button>
-    <p>Don't have an account? <a href="signup.html">Signup</a></p>
-  </div>
-  <script src="auth.js"></script>
+  <h2>Login</h2>
+  <input id="login-email" type="email" placeholder="Email">
+  <input id="login-password" type="password" placeholder="Password">
+  <button id="login-btn">Login</button>
+  <p>Don't have an account? <a href="signup.html">Signup</a></p>
+
+  <script type="module">
+    import { loginUser } from './auth.js';
+    document.getElementById('login-btn').onclick = async () => {
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      try {
+        await loginUser(email, password);
+        window.location.href = 'index.html';
+      } catch (e) {
+        alert(e.message);
+      }
+    };
+  </script>
 </body>
 </html>
