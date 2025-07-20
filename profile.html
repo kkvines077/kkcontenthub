@@ -1,32 +1,28 @@
-<!-- profile.html -->
-<input id="name" placeholder="Your name">
-<input id="bio" placeholder="Short bio">
-<input id="photo" placeholder="Profile image URL">
-<button onclick="saveProfile()">Save Profile</button>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Update Profile</title>
+  <link rel="stylesheet" href="style.css" />
+  <script type="module" src="profile.js" defer></script>
+</head>
+<body>
+  <div class="container">
+    <h2>Update Your Profile</h2>
 
-<script type="module">
-  import { auth, db } from './firebase.js';
-  import { doc, setDoc } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
-  import { onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+    <div class="profile-section">
+      <img id="profilePicPreview" src="default-avatar.png" alt="Profile Picture" class="avatar" />
+      <input type="file" id="profilePicInput" accept="image/*" />
+    </div>
 
-  function saveProfile() {
-    const name = document.getElementById('name').value;
-    const bio = document.getElementById('bio').value;
-    const photoURL = document.getElementById('photo').value;
+    <div class="form-section">
+      <input type="text" id="displayName" placeholder="Display Name" />
+      <textarea id="bio" placeholder="Short Bio (optional)"></textarea>
+      <button id="saveProfile">Save Profile</button>
+    </div>
 
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        await setDoc(doc(db, "users", user.uid), {
-          uid: user.uid,
-          email: user.email,
-          name, bio, photoURL,
-          friends: [],
-          friendRequests: [],
-          sentRequests: []
-        });
-        alert("Profile saved!");
-      }
-    });
-  }
-          </script>
-          
+    <p id="status"></p>
+  </div>
+</body>
+</html>
