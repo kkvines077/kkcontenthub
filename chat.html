@@ -1,16 +1,91 @@
-<!-- chat.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Chat</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smart Chat</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h2 id="chatWith"></h2>
-  <div id="chatBox"></div>
-  <input id="messageInput" placeholder="Type your message..." />
-  <button onclick="send()">Send</button>
-  <div id="smartReplyBox"></div>
-  <script type="module" src="script.js"></script>
+  <div class="chat-container">
+    <h2>Smart Chat 💬</h2>
+
+    <select id="friendSelect">
+      <option value="">Select a Friend</option>
+      <option value="FRIEND_UID_1">Friend 1</option>
+      <option value="FRIEND_UID_2">Friend 2</option>
+      <!-- You can dynamically load users here -->
+    </select>
+
+    <div id="chatBox" class="chat-box"></div>
+
+    <div class="smart-replies" id="smartReplies"></div>
+
+    <input type="text" id="messageInput" placeholder="Type a message..." />
+    <button id="sendBtn">Send</button>
+  </div>
+
+  <script type="module">
+    import { auth } from './firebase.js';
+    import { sendMessage, listenForMessages } from './chat.js';
+
+    const messageInput = document.getElementById('messageInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const chatBox = document.getElementById('chatBox');
+    const smartReplies = document.getElementById('smartReplies');
+    const friendSelect = document.getElementById('friendSelect');
+
+    let selectedFriendUID = "";
+
+    friendSelect.addEventListener('change', () => {
+      selectedFriendUID = friendSelect.value;
+      chatBox.innerHTML = '';
+      if (selectedFriendUID) {
+        listenForMessages(selectedFriendUID, (messages) => {
+          chatBox.innerHTML = '';
+          messages.forEach(msg => {
+            const div = document.createElement('div');
+            div.className = msg.from === auth.currentUser.uid ? 'my-msg' : 'friend-msg';
+            div.innerText = msg.text;
+            chatBox.appendChild(div);
+          });
+          chatBox.scrollTop = chatBox.scrollHeight;
+        });
+      }
+    });
+
+    sendBtn.addEventListener('click', async () => {
+      const text = messageInput.value.trim();
+      if (text && selectedFriendUID) {
+        await sendMessage(text, selectedFriendUID);
+        messageInput.value = '';
+        detectEmojiAndSuggest(text);
+      }
+    });
+
+    function detectEmojiAndSuggest(text) {
+      let suggestions = [];
+
+      if (text.includes('😊')) suggestions = ["Glad to hear!", "That's nice!", "You're awesome!"];
+      else if (text.includes('😢')) suggestions = ["I'm here for you", "Everything will be okay", "Sending hugs"];
+      else if (text.includes('❤️')) suggestions = ["Love you too!", "That's sweet", "Much love!"];
+      else if (text.includes('?')) suggestions = ["Yes!", "No", "Maybe!", "I'll check and tell you"];
+      else if (text.length < 6) suggestions = ["Tell me more", "Go on...", "Hmm?"];
+
+      showSmartReplies(suggestions);
+    }
+
+    function showSmartReplies(suggestions) {
+      smartReplies.innerHTML = '';
+      suggestions.forEach(text => {
+        const btn = document.createElement('button');
+        btn.innerText = text;
+        btn.onclick = () => {
+          messageInput.value = text;
+        };
+        smartReplies.appendChild(btn);
+      });
+    }
+  </script>
 </body>
 </html>
