@@ -23,24 +23,21 @@ function login() {
   if (email === savedEmail && password === savedPassword) {
     alert("Login successful!");
     localStorage.setItem("isLoggedIn", "true");
-    window.location.href = "index.html";
+    window.location.href = "friends.html";
   } else {
     alert("Invalid credentials");
-    window.location.href = "friends.html";
   }
+}
+
+function logout() {
+  localStorage.removeItem("isLoggedIn");
+  localStorage.removeItem("chatWith");
+  window.location.href = "login.html";
 }
 
 function checkLogin() {
   const loggedIn = localStorage.getItem("isLoggedIn");
   if (loggedIn !== "true") {
     window.location.href = "login.html";
-    if (loggedIn !== "true") {
-  window.location.href = "login.html";
-}
   }
-}
-
-// Call checkLogin() only in index.html
-if (window.location.pathname.includes("index.html")) {
-  checkLogin();
 }
