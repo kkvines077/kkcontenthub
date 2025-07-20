@@ -2,19 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Smart Chat App</title>
   <link rel="stylesheet" href="style.css" />
-  
 </head>
 <body>
   <div class="chat-container">
     <div class="header">
-  Chat with <span id="chatWithName"></span>
-  <button onclick="logout()" style="float:right">Logout</button>
-</div>
-
-
+      Chat with <span id="chatWithName"></span>
+      <button onclick="logout()" class="logout">Logout</button>
+    </div>
     <div class="chat-box" id="chatBox"></div>
     <div class="suggestions" id="suggestions"></div>
     <div class="input-area">
@@ -22,11 +19,14 @@
       <button onclick="sendMessage()">Send</button>
     </div>
   </div>
-  <script>
-  document.getElementById("chatWithName").innerText =
-    localStorage.getItem("chatWith") || "Friend";
-  </script>
-  
+
+  <script src="auth.js"></script>
+  <script src="data.js"></script>
   <script src="script.js"></script>
+
+  <script>
+    document.getElementById("chatWithName").innerText =
+      localStorage.getItem("chatWith") || "Friend";
+  </script>
 </body>
 </html>
