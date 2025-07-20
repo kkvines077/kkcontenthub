@@ -1,43 +1,19 @@
-function signup() {
-  const email = document.getElementById("signupEmail").value;
-  const password = document.getElementById("signupPassword").value;
+// auth.js
+import { auth } from './firebase.js';
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-  if (!email || !password) {
-    alert("Fill all fields");
-    return;
-  }
-
-  localStorage.setItem("userEmail", email);
-  localStorage.setItem("userPassword", password);
-  alert("Signup successful!");
-  window.location.href = "login.html";
+export function signupUser(email, password) {
+  return createUserWithEmailAndPassword(auth, email, password);
 }
 
-function login() {
-  const email = document.getElementById("loginEmail").value;
-  const password = document.getElementById("loginPassword").value;
-
-  const savedEmail = localStorage.getItem("userEmail");
-  const savedPassword = localStorage.getItem("userPassword");
-
-  if (email === savedEmail && password === savedPassword) {
-    alert("Login successful!");
-    localStorage.setItem("isLoggedIn", "true");
-    window.location.href = "friends.html";
-  } else {
-    alert("Invalid credentials");
-  }
+export function loginUser(email, password) {
+  return signInWithEmailAndPassword(auth, email, password);
 }
 
-function logout() {
-  localStorage.removeItem("isLoggedIn");
-  localStorage.removeItem("chatWith");
-  window.location.href = "login.html";
-}
-
-function checkLogin() {
-  const loggedIn = localStorage.getItem("isLoggedIn");
-  if (loggedIn !== "true") {
-    window.location.href = "login.html";
-  }
+export function logout() {
+  return signOut(auth).then(() => location.href = 'login.html');
 }
