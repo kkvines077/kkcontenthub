@@ -1,135 +1,37 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
+/* style.css */
 body {
-  font-family: Arial, sans-serif;
-  background: #f4f4f4;
-}
-
-.chat-container {
-  width: 95%;
-  max-width: 450px;
-  margin: auto;
-  margin-top: 50px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 0 15px rgba(0,0,0,0.1);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  height: 90vh;
-}
-
-.header {
-  background: #4a90e2;
-  color: white;
-  padding: 16px;
-  font-size: 18px;
-  position: relative;
-}
-
-.logout {
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  background: #e74c3c;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.chat-box {
-  flex: 1;
-  padding: 10px;
-  overflow-y: auto;
-}
-
-.message {
-  margin: 10px 0;
-}
-
-.user {
-  text-align: right;
-  color: #333;
-}
-
-.bot {
-  text-align: left;
-  color: #4a90e2;
-}
-
-.input-area {
-  display: flex;
-  padding: 10px;
-  border-top: 1px solid #ccc;
-}
-
-.input-area input {
-  flex: 1;
-  padding: 10px;
-  border-radius: 20px;
-  border: 1px solid #ccc;
-}
-
-.input-area button {
-  background: #4a90e2;
-  color: white;
-  padding: 10px 16px;
-  margin-left: 10px;
-  border: none;
-  border-radius: 20px;
-  cursor: pointer;
-}
-
-.suggestions {
-  padding: 8px 10px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.suggestions button {
-  background: #e0e0e0;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 16px;
-  cursor: pointer;
-}
-
-.auth-container {
-  max-width: 400px;
-  margin: 60px auto;
+  font-family: sans-serif;
   padding: 20px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 0 12px rgba(0,0,0,0.1);
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  text-align: center;
+  background: #f5f5f5;
 }
 
-.auth-container input {
+input {
   padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  margin: 5px;
+  width: 90%;
+  max-width: 400px;
 }
 
-.auth-container button {
+button {
   padding: 10px;
-  background-color: #4a90e2;
+  background: #008cff;
   color: white;
   border: none;
-  border-radius: 8px;
-  cursor: pointer;
+  border-radius: 5px;
+  margin: 5px;
 }
 
-.auth-container a {
-  color: #4a90e2;
-  text-decoration: none;
+#chatBox {
+  border: 1px solid #ccc;
+  padding: 10px;
+  max-height: 300px;
+  overflow-y: auto;
+  margin-bottom: 10px;
+  background: white;
+}
+
+#smartReplyBox button {
+  margin: 2px;
+  background-color: #eee;
+  color: black;
 }
