@@ -26,6 +26,7 @@ function login() {
     window.location.href = "index.html";
   } else {
     alert("Invalid credentials");
+    window.location.href = "friends.html";
   }
 }
 
@@ -33,6 +34,9 @@ function checkLogin() {
   const loggedIn = localStorage.getItem("isLoggedIn");
   if (loggedIn !== "true") {
     window.location.href = "login.html";
+    if (loggedIn !== "true") {
+  window.location.href = "login.html";
+}
   }
 }
 
