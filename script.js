@@ -1,106 +1,32 @@
 // script.js
-import { auth, db } from './firebase.js';
-import {
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-import {
-  collection, addDoc, query, orderBy, onSnapshot, where, getDocs
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-const friends = ["user1@example.com", "user2@example.com"];
-let currentUser;
-let currentChatWith = localStorage.getItem("chatWith") || null;
-
-onAuthStateChanged(auth, user => {
-  if (!user) {
-    window.location.href = 'login.html';
-  } else {
-    currentUser = user.email;
-
-    if (window.location.pathname.includes("index.html")) {
-      const friendList = document.getElementById("friendList");
-      friendList.innerHTML = "";
-      friends.forEach(friend => {
-        if (friend !== currentUser) {
-          const btn = document.createElement("button");
-          btn.innerText = friend;
-          btn.onclick = () => {
-            localStorage.setItem("chatWith", friend);
-            window.location.href = "chat.html";
-          };
-          friendList.appendChild(btn);
-        }
-      });
-    }
-
-    if (window.location.pathname.includes("chat.html")) {
-      document.getElementById("chatWith").innerText = `Chatting with: ${currentChatWith}`;
-      document.getElementById("messageInput").addEventListener("keyup", e => {
-        if (e.key === "Enter") send();
-      });
-      listenForMessages();
-    }
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById('lostMobileForm');
+  if (form) {
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      document.getElementById('formMessage').textContent = 
+        "Report submitted successfully. Your Report ID is: REP" + Math.floor(Math.random()*10000);
+    });
   }
 });
 
-window.send = async function () {
-  const text = document.getElementById("messageInput").value;
-  if (!text) return;
-
-  await addDoc(collection(db, "messages"), {
-    from: currentUser,
-    to: currentChatWith,
-    text,
-    timestamp: new Date()
-  });
-
-  document.getElementById("messageInput").value = "";
-  generateSmartReplies(text);
-};
-
-function listenForMessages() {
-  const q = query(
-    collection(db, "messages"),
-    orderBy("timestamp", "asc")
-  );
-
-  onSnapshot(q, snapshot => {
-    const chatBox = document.getElementById("chatBox");
-    chatBox.innerHTML = "";
-    snapshot.forEach(doc => {
-      const data = doc.data();
-      if (
-        (data.from === currentUser && data.to === currentChatWith) ||
-        (data.to === currentUser && data.from === currentChatWith)
-      ) {
-        const div = document.createElement("div");
-        div.innerText = `${data.from}: ${data.text}`;
-        chatBox.appendChild(div);
-      }
-    });
-  });
+function checkStatus() {
+  const reportId = document.getElementById('reportId').value;
+  if (reportId.trim() === "") {
+    alert("Please enter a Report ID");
+    return;
+  }
+  document.getElementById('statusResult').textContent = 
+    "Your report is being processed. Please check back later.";
 }
 
-function generateSmartReplies(message) {
-  const smartReplies = {
-    "😊": ["Glad to hear that!", "Awesome!", "Keep smiling 😊"],
-    "😢": ["I'm here for you", "Everything will be fine", "Sending hugs 😢"],
-    "hello": ["Hi!", "Hello there!", "Hey, how are you?"],
-    "thanks": ["You're welcome!", "Anytime!", "No problem!"]
-  };
-
-  const replyBox = document.getElementById("smartReplyBox");
-  replyBox.innerHTML = "";
-  Object.keys(smartReplies).forEach(key => {
-    if (message.toLowerCase().includes(key)) {
-      smartReplies[key].forEach(reply => {
-        const btn = document.createElement("button");
-        btn.innerText = reply;
-        btn.onclick = () => {
-          document.getElementById("messageInput").value = reply;
-        };
-        replyBox.appendChild(btn);
-      });
-    }
-  });
+function adminLogin() {
+  const user = document.getElementById('adminUser').value;
+  const pass = document.getElementById('adminPass').value;
+  if (user === "admin" && pass === "admin123") {
+    document.getElementById('adminMessage').textContent = "Login successful!";
+  } else {
+    document.getElementById('adminMessage').textContent = "Invalid credentials";
+  }
 }
