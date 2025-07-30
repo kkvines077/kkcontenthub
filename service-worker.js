@@ -1,8 +1,9 @@
-const CACHE_NAME = "portfolio-cache-v1";
+const CACHE_NAME = "portfolio-cache-v2";
 const urlsToCache = [
   "/",
   "/index.html",
   "/resume.html",
+  "/resume.pdf",
   "/style.css",
   "/script.js",
   "/manifest.json",
@@ -11,7 +12,9 @@ const urlsToCache = [
 ];
 
 self.addEventListener("install", event => {
-  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache)));
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
+  );
 });
 
 self.addEventListener("fetch", event => {
