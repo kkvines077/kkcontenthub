@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shaik Yousuf Sharief - Resume</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body class="fade-in">
+
+  <header class="glass-nav">
+    <h1 class="logo">MyPortfolio</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="resume.html" class="active">Resume</a>
+    </nav>
+  </header>
+
+  <section class="glass-section fade-up" style="margin-top: 100px;">
+    <h2>My Resume</h2>
+    <div id="resume-content">
+      <h3>Shaik Yousuf Sharief</h3>
+      <p><b>Email:</b> misharief0@gmail.com</p>
+      <p><b>Phone:</b> 6301027255</p>
+      <p><b>Address:</b> 6/184 KMH Street, Kadapa</p>
+      <hr style="margin:20px 0;">
+      <h3>Qualification</h3>
+      <p>Diploma in Civil Engineering</p>
+      <hr style="margin:20px 0;">
+      <h3>Skills</h3>
+      <ul>
+        <li>AutoCAD Drafting</li>
+        <li>Construction Project Management</li>
+        <li>Structural Design Basics</li>
+        <li>Teamwork & Leadership</li>
+      </ul>
+      <hr style="margin:20px 0;">
+      <h3>Experience</h3>
+      <p>Fresher - Open to work and learn.</p>
+    </div>
+    <button id="downloadResume" class="skip-btn show">Download PDF</button>
+  </section>
+
+  <script>
+    document.getElementById('downloadResume').addEventListener('click', () => {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      doc.text("Shaik Yousuf Sharief", 10, 10);
+      doc.text("Email: misharief0@gmail.com", 10, 20);
+      doc.text("Phone: 6301027255", 10, 30);
+      doc.text("Address: 6/184 KMH Street, Kadapa", 10, 40);
+      doc.text("Qualification: Diploma in Civil Engineering", 10, 50);
+      doc.text("Skills:", 10, 60);
+      doc.text("- AutoCAD Drafting", 10, 70);
+      doc.text("- Construction Project Management", 10, 80);
+      doc.text("- Structural Design Basics", 10, 90);
+      doc.text("- Teamwork & Leadership", 10, 100);
+      doc.text("Experience: Fresher - Open to work and learn", 10, 110);
+      doc.save("Shaik_Yousuf_Sharief_Resume.pdf");
+    });
+  </script>
+</body>
+  </html>
+  
