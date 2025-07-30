@@ -11,8 +11,21 @@ const remoteVideo = document.getElementById("remoteVideo");
 const startBtn = document.getElementById("startBtn");
 const hangupBtn = document.getElementById("hangupBtn");
 
-startBtn.addEventListener("click", startCall);
+startBtn.addEventListener("click", requestPermission);
 hangupBtn.addEventListener("click", hangUp);
+
+async function requestPermission() {
+  try {
+    // Browser will ask camera & mic permission here
+    localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+    localVideo.srcObject = localStream;
+
+    startCall(); // only start WebRTC after permission granted
+  } catch (error) {
+    alert("Camera & microphone permission denied!");
+    console.error(error);
+  }
+}
 
 async function startCall() {
   startBtn.disabled = true;
@@ -22,15 +35,12 @@ async function startCall() {
   socket.onmessage = onMessage;
 
   socket.onopen = async () => {
-    await startLocalVideo();
+    await setupPeerConnection();
     sendMessage({ type: "join", room: roomName });
   };
 }
 
-async function startLocalVideo() {
-  localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-  localVideo.srcObject = localStream;
-
+async function setupPeerConnection() {
   peerConnection = new RTCPeerConnection(servers);
   remoteStream = new MediaStream();
   remoteVideo.srcObject = remoteStream;
