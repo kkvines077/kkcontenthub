@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: http://chorbazar.work.gd/index.html#contact
