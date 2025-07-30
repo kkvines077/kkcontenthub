@@ -3,113 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shaik Yousuf Sharief - Portfolio</title>
-  
-  <!-- SEO -->
-  <meta name="description" content="Shaik Yousuf Sharief - Diploma in Civil Engineering | AutoCAD Drafting | Construction Management | Portfolio with Resume Download & PWA Support." />
-  <meta name="keywords" content="Shaik Yousuf Sharief, Civil Engineer, AutoCAD, Construction Management, Portfolio, Resume, PWA" />
-  <meta name="author" content="Shaik Yousuf Sharief" />
-  <meta name="robots" content="index, follow" />
-  
-  <!-- Open Graph / Facebook -->
-  <meta property="og:title" content="Shaik Yousuf Sharief - Portfolio" />
-  <meta property="og:description" content="Personal portfolio of Shaik Yousuf Sharief with PWA, resume download, and offline support." />
-  <meta property="og:image" content="images/profile.jpg" />
-  <meta property="og:url" content="https://your-github-username.github.io/portfolio/" />
-  <meta property="og:type" content="website" />
-
-  <!-- Twitter -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Shaik Yousuf Sharief - Portfolio" />
-  <meta name="twitter:description" content="Portfolio with resume download & offline support." />
-  <meta name="twitter:image" content="images/profile.jpg" />
-  
-  <link rel="manifest" href="manifest.json" />
+  <title>Video Call</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="script.js" defer></script>
 </head>
+<body>
+  <div class="container">
+    <h1>WebRTC Video Call</h1>
+    <input id="roomInput" placeholder="Enter Room Name" />
+    <button id="joinBtn">Join Room</button>
 
-<body class="fade-in">
+    <div class="video-container">
+      <video id="localVideo" autoplay playsinline muted></video>
+      <video id="remoteVideo" autoplay playsinline></video>
+    </div>
 
-  <!-- Splash Screen -->
-  <div id="splashScreen">
-    <div class="splash-logo">
-      <img src="images/icon-192.png" alt="Logo" />
-      <h1 class="splash-title">My Portfolio</h1>
-      <div class="loading-dots">
-        <span></span><span></span><span></span>
-      </div>
-      <button id="skipSplash" class="skip-btn">Skip</button>
+    <div class="controls">
+      <button id="hangupBtn" disabled>Hang Up</button>
     </div>
   </div>
-
-  <!-- Glass Navigation -->
-  <header class="glass-nav">
-    <h1 class="logo">MyPortfolio</h1>
-    <nav>
-      <a href="#home">Home</a>
-      <a href="#about">About</a>
-      <a href="#skills">Skills</a>
-      <a href="#projects">Projects</a>
-      <a href="#testimonials">Testimonials</a>
-      <a href="#contact">Contact</a>
-      <a href="resume.html">Resume</a>
-    </nav>
-  </header>
-
-  <!-- Sections -->
-  <section id="home" class="parallax-section">
-    <div class="intro">
-      <img src="images/profile.jpg" alt="Profile" class="profile-photo" />
-      <h2>Shaik Yousuf Sharief</h2>
-      <h3><span class="typing-text"></span></h3>
-    </div>
-  </section>
-
-  <section id="about" class="glass-section fade-up">
-    <h2>About Me</h2>
-    <p>I am a Civil Engineering diploma holder with strong knowledge in design, drafting, and project management. Passionate about learning new technologies and continuously improving.</p>
-  </section>
-
-  <section id="skills" class="glass-section fade-up">
-    <h2>Skills</h2>
-    <ul class="skills-list">
-      <li>AutoCAD</li>
-      <li>Construction Management</li>
-      <li>Structural Design</li>
-      <li>Teamwork</li>
-    </ul>
-  </section>
-
-  <section id="projects" class="glass-section fade-up">
-    <h2>Projects</h2>
-    <div class="card-container">
-      <div class="glass-card">Small Residential Building Design</div>
-      <div class="glass-card">AutoCAD Drafting Portfolio</div>
-      <div class="glass-card">Cost Estimation Sheets</div>
-    </div>
-  </section>
-
-  <section id="testimonials" class="glass-section fade-up">
-    <h2>Testimonials</h2>
-    <div class="testimonial-slider">
-      <div class="testimonial active">"Great team player and quick learner!"</div>
-      <div class="testimonial">"Very good at drafting and project management."</div>
-      <div class="testimonial">"Highly dedicated and professional attitude."</div>
-    </div>
-  </section>
-
-  <section id="contact" class="glass-section fade-up">
-    <h2>Contact</h2>
-    <form id="contactForm">
-      <input type="text" id="name" placeholder="Your Name" required />
-      <input type="email" id="email" placeholder="Your Email" required />
-      <textarea id="message" placeholder="Your Message" required></textarea>
-      <button type="submit">Send</button>
-    </form>
-  </section>
-
-  <button id="scrollTopBtn">↑</button>
 
   <script src="script.js"></script>
 </body>
