@@ -1,23 +1,22 @@
 let localStream;
 let remoteStream;
 let peerConnection;
-let roomName;
 let socket;
 
 const servers = { iceServers: [{ urls: "stun:stun.l.google.com:19302" }] };
+const roomName = "defaultRoom";
 
 const localVideo = document.getElementById("localVideo");
 const remoteVideo = document.getElementById("remoteVideo");
-const joinBtn = document.getElementById("joinBtn");
+const startBtn = document.getElementById("startBtn");
 const hangupBtn = document.getElementById("hangupBtn");
-const roomInput = document.getElementById("roomInput");
 
-joinBtn.addEventListener("click", joinRoom);
+startBtn.addEventListener("click", startCall);
 hangupBtn.addEventListener("click", hangUp);
 
-async function joinRoom() {
-  roomName = roomInput.value.trim();
-  if (!roomName) return alert("Enter a room name");
+async function startCall() {
+  startBtn.disabled = true;
+  hangupBtn.disabled = false;
 
   socket = new WebSocket("ws://localhost:3000");
   socket.onmessage = onMessage;
@@ -44,8 +43,6 @@ async function startLocalVideo() {
       sendMessage({ type: "candidate", candidate: event.candidate, room: roomName });
     }
   };
-
-  hangupBtn.disabled = false;
 }
 
 async function onMessage(event) {
@@ -77,10 +74,20 @@ function sendMessage(msg) {
 
 function hangUp() {
   hangupBtn.disabled = true;
-  peerConnection.close();
-  peerConnection = null;
-  localStream.getTracks().forEach(track => track.stop());
+  startBtn.disabled = false;
+
+  if (peerConnection) {
+    peerConnection.close();
+    peerConnection = null;
+  }
+
+  if (localStream) {
+    localStream.getTracks().forEach(track => track.stop());
+    localStream = null;
+  }
+
   remoteVideo.srcObject = null;
   localVideo.srcObject = null;
-  socket.close();
+
+  if (socket) socket.close();
 }
