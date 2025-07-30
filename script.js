@@ -1,72 +1,86 @@
-// Splash Screen + Skip Button
-window.addEventListener('load', () => {
-  const splash = document.getElementById('splashScreen');
-  const skipBtn = document.getElementById('skipSplash');
-  setTimeout(() => skipBtn.classList.add('show'), 1000);
-  const splashTimeout = setTimeout(() => {
-    splash.style.display = 'none';
-  }, 4000);
-  skipBtn.addEventListener('click', () => {
-    clearTimeout(splashTimeout);
-    splash.style.display = 'none';
-  });
-});
+let localStream;
+let remoteStream;
+let peerConnection;
+let roomName;
+let socket;
 
-// Typing Effect
-const typingText = document.querySelector('.typing-text');
-const words = ["I am Developer", "I am Designer", "I am Learner"];
-let wordIndex = 0, charIndex = 0, deleting = false;
-function typeEffect() {
-  const currentWord = words[wordIndex];
-  typingText.textContent = currentWord.substring(0, charIndex);
-  if (!deleting && charIndex < currentWord.length) charIndex++;
-  else if (deleting && charIndex > 0) charIndex--;
-  else {
-    deleting = !deleting;
-    if (!deleting) wordIndex = (wordIndex + 1) % words.length;
-  }
-  setTimeout(typeEffect, deleting ? 80 : 120);
+const servers = { iceServers: [{ urls: "stun:stun.l.google.com:19302" }] };
+
+const localVideo = document.getElementById("localVideo");
+const remoteVideo = document.getElementById("remoteVideo");
+const joinBtn = document.getElementById("joinBtn");
+const hangupBtn = document.getElementById("hangupBtn");
+const roomInput = document.getElementById("roomInput");
+
+joinBtn.addEventListener("click", joinRoom);
+hangupBtn.addEventListener("click", hangUp);
+
+async function joinRoom() {
+  roomName = roomInput.value.trim();
+  if (!roomName) return alert("Enter a room name");
+
+  socket = new WebSocket("ws://localhost:3000");
+  socket.onmessage = onMessage;
+
+  socket.onopen = async () => {
+    await startLocalVideo();
+    sendMessage({ type: "join", room: roomName });
+  };
 }
-typeEffect();
 
-// Testimonials Slider
-const testimonials = document.querySelectorAll('.testimonial');
-let testimonialIndex = 0;
-setInterval(() => {
-  testimonials[testimonialIndex].classList.remove('active');
-  testimonialIndex = (testimonialIndex + 1) % testimonials.length;
-  testimonials[testimonialIndex].classList.add('active');
-}, 3000);
+async function startLocalVideo() {
+  localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+  localVideo.srcObject = localStream;
 
-// Scroll To Top Button
-const scrollTopBtn = document.getElementById('scrollTopBtn');
-window.addEventListener('scroll', () => {
-  scrollTopBtn.style.display = window.scrollY > 300 ? 'block' : 'none';
-});
-scrollTopBtn.addEventListener('click', () => {
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-});
+  peerConnection = new RTCPeerConnection(servers);
+  remoteStream = new MediaStream();
+  remoteVideo.srcObject = remoteStream;
 
-// Contact Form Validation
-document.getElementById('contactForm').addEventListener('submit', e => {
-  e.preventDefault();
-  const name = document.getElementById('name');
-  const email = document.getElementById('email');
-  const message = document.getElementById('message');
-  if (!name.value.trim() || !email.value.trim() || !message.value.trim()) {
-    alert("Please fill all fields!");
-    return;
+  localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+  peerConnection.ontrack = (e) => e.streams[0].getTracks().forEach(track => remoteStream.addTrack(track));
+
+  peerConnection.onicecandidate = (event) => {
+    if (event.candidate) {
+      sendMessage({ type: "candidate", candidate: event.candidate, room: roomName });
+    }
+  };
+
+  hangupBtn.disabled = false;
+}
+
+async function onMessage(event) {
+  const data = JSON.parse(event.data);
+
+  if (data.type === "joined" && data.youAreCaller) {
+    const offer = await peerConnection.createOffer();
+    await peerConnection.setLocalDescription(offer);
+    sendMessage({ type: "offer", offer, room: roomName });
+  } else if (data.type === "offer") {
+    await peerConnection.setRemoteDescription(new RTCSessionDescription(data.offer));
+    const answer = await peerConnection.createAnswer();
+    await peerConnection.setLocalDescription(answer);
+    sendMessage({ type: "answer", answer, room: roomName });
+  } else if (data.type === "answer") {
+    await peerConnection.setRemoteDescription(new RTCSessionDescription(data.answer));
+  } else if (data.type === "candidate") {
+    try {
+      await peerConnection.addIceCandidate(data.candidate);
+    } catch (e) {
+      console.error("Error adding ICE candidate", e);
+    }
   }
-  alert('Message Sent Successfully!');
-});
+}
 
-// Smooth Page Transitions
-document.querySelectorAll('a[href$=".html"], a[href^="#"]').forEach(link => {
-  link.addEventListener('click', e => {
-    const href = link.getAttribute('href');
-    if (href.startsWith('#')) return; 
-    e.preventDefault();
-    document.body.classList.remove('fade-in');
-    setTimeout(() => { window.location.href = href; }, 300);
-  });
-});
+function sendMessage(msg) {
+  socket.send(JSON.stringify(msg));
+}
+
+function hangUp() {
+  hangupBtn.disabled = true;
+  peerConnection.close();
+  peerConnection = null;
+  localStream.getTracks().forEach(track => track.stop());
+  remoteVideo.srcObject = null;
+  localVideo.srcObject = null;
+  socket.close();
+}
