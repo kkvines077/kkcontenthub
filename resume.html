@@ -39,9 +39,9 @@
       <h3>Experience</h3>
       <p>Fresher - Open to work and learn.</p>
     </div>
-    <button id="downloadResume" class="skip-btn show">Download PDF</button>
+    <button onclick="window.location.href='resume.pdf'" class="skip-btn show">Download PDF</button>
   </section>
-
+  
   <script>
     document.getElementById('downloadResume').addEventListener('click', () => {
       const { jsPDF } = window.jspdf;
