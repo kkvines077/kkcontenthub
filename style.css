@@ -1,0 +1,14 @@
+:root{
+-:-bg:#0b0b0f; --panel:#12121a88; --text:#e8e6f2; --muted:#a7a6b3; --gold:#d6b25e; --accent:#f1e3b1;
+--radius:22px; --shadow:0 10px 30px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:radial-gradient(1200px 800px at 20% 10%,#171722,#0b0b0f);color:var(--text);font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;}
+
+
+/* nav */
+.nav{position:sticky;top:0;display:flex;justify-content:space-between;align-items:center;padding:16px 24px;background:rgba(10,10,16,.45);backdrop-filter:blur(8px);border-bottom:1px solid #ffffff0f;z-index:10}
+.logo{font-family:"Playfair Display",serif;font-size:24px;letter-spacing:.5px}
+.logo span{color:var(--gold)}
+.nav a{color:var(--text);text
