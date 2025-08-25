@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Shop – Aroma Luxe</title>
+<link rel="stylesheet" href="./css/style.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<header class="nav">
+<div class="logo">Aroma <span>Luxe</span></div>
+<nav>
+<a href="./index.html">Home</a>
+<a class="active" href="./shop.html">Shop</a>
+<a href="./about.html">About</a>
+<a href="./contact.html">Contact</a>
+<a href="./cart.html" class="btn-ghost">Cart <span id="cart-count">0</span></a>
+</nav>
+</header>
+
+
+<section class="toolbar glass">
+<input id="search" placeholder="Search fragrances…" />
+<select id="sort">
+<option value="new">Newest</option>
+<option value="price_asc">Price: Low to High</option>
+<option value="price_desc">Price: High to Low</option>
+</select>
+</section>
+
+
+<section class="grid">
+<div class="products" id="shop-products"></div>
+</section>
+
+
+<script src="./js/app.js"></script>
+</body>
+</html>
