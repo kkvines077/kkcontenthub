@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Aroma Luxe – Unveil Your Elegance</title>
+<meta name="description" content="Aroma Luxe – Luxury perfumes crafted with rare notes. Shop Noir Essence, Velvet Rose, Citrus Whisper and more." />
+<meta property="og:title" content="Aroma Luxe – Luxury Perfumes" />
+<link rel="stylesheet" href="./css/style.css" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<canvas id="particles"></canvas>
+<header class="nav">
+<div class="logo">Aroma <span>Luxe</span></div>
+<nav>
+<a class="active" href="./index.html">Home</a>
+<a href="./shop.html">Shop</a>
+<a href="./about.html">About</a>
+<a href="./contact.html">Contact</a>
+<a href="./cart.html" class="btn-ghost">Cart <span id="cart-count">0</span></a>
+</nav>
+</header>
+
+
+<section class="hero">
+<div class="hero-content glass">
+<h1>Unveil Your <span>Elegance</span></h1>
+<p>Curated luxury fragrances that linger like a memory.</p>
+<div class="cta">
+<a href="./shop.html" class="btn-primary">Shop Perfumes</a>
+<a href="#best" class="btn-secondary">Best Sellers</a>
+</div>
+</div>
+</section>
+
+
+<section class="grid" id="best">
+<h2 class="section-title">Best Sellers</h2>
+<div class="products" id="best-products"></div>
+</section>
+
+
+<footer class="footer">
+<div class="newsletter glass">
+<h3>Join our Scent Circle</h3>
+<form id="newsletter-form">
+<input type="email" placeholder="Your email" required>
+<button class="btn-primary" type="submit">Subscribe</button>
+</form>
+</div>
+<p>© <span id="year"></span> Aroma Luxe. All rights reserved.</p>
+</footer>
+
+
+<script src="./js/app.js"></script>
+</body>
+</html>
