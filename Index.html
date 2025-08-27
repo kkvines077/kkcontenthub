@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Search Portal</title>
+  <meta name="description" content="A minimal, accessible search homepage." />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header" role="banner">
+    <nav class="top-nav" aria-label="Primary">
+      <ul>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#privacy">Privacy</a></li>
+        <li><button id="themeToggle" class="btn btn-ghost" aria-pressed="false" aria-label="Toggle dark mode">Theme</button></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main" class="main">
+    <section class="hero" aria-labelledby="siteTitle">
+      <div class="mark" aria-hidden="true" role="img"></div>
+      <h1 id="siteTitle">Search Portal</h1>
+      <p class="tagline">Fast, private, minimalist search launcher.</p>
+
+      <form id="searchForm" class="search-form" role="search" aria-label="Site search" autocomplete="off" novalidate>
+        <div class="search-input-wrap">
+          <span class="search-icon" aria-hidden="true">⌕</span>
+          <input
+            id="q"
+            name="q"
+            type="search"
+            inputmode="search"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="Search the web"
+            aria-label="Search the web"
+            aria-autocomplete="list"
+            aria-controls="suggestList"
+            aria-expanded="false"
+            required
+            minlength="1"
+            maxlength="512"
+          />
+          <button type="button" class="clear-btn" id="clearBtn" aria-label="Clear search">×</button>
+        </div>
+
+        <ul id="suggestList" class="suggestions" role="listbox"></ul>
+
+        <div class="actions">
+          <button type="submit" class="btn">Search</button>
+          <button type="button" class="btn btn-ghost" id="luckyBtn" aria-label="Open first result">Lucky</button>
+        </div>
+
+        <fieldset class="engine" aria-label="Search engine">
+          <legend class="sr-only">Choose search engine</legend>
+          <label><input type="radio" name="engine" value="google" checked /> Google (redirect only)</label>
+          <label><input type="radio" name="engine" value="bing" /> Bing</label>
+          <label><input type="radio" name="engine" value="duck" /> DuckDuckGo</label>
+        </fieldset>
+      </form>
+    </section>
+
+    <section id="features" class="info">
+      <h2>Features</h2>
+      <ul>
+        <li>Keyboard-first navigation, ARIA listbox suggestions, and reduced-motion-friendly transitions.</li>
+        <li>Light/dark themes with OS preference detection and persistent user toggle.</li>
+        <li>No tracking; suggestions are generated locally (stubbed) or via a pluggable endpoint.</li>
+      </ul>
+    </section>
+    <section class="wallet" aria-labelledby="walletTitle">
+  <h2 id="walletTitle">Wallet</h2>
+  <div class="wallet-row">
+    <div class="balance">
+      <span class="label">Coins</span>
+      <span id="coinBalance" class="value">0</span>
+    </div>
+    <div class="progress">
+      <span class="label">Next coin</span>
+      <progress id="coinProgress" value="0" max="600000" aria-label="Progress to next coin"></progress>
+      <span id="progressTime" class="muted">0:00 / 10:00</span>
+    </div>
+    <button id="claimBtn" class="btn btn-ghost" aria-disabled="true">Claim</button>
+  </div>
+  <details class="history">
+    <summary>Earning history</summary>
+    <ul id="historyList" class="history-list"></ul>
+  </details>
+    </section>
+    
+
+    <section id="privacy" class="info">
+      <h2>Privacy</h2>
+      <p>This template performs client-side redirects; autosuggest is local by default. To use a remote API, add explicit consent and a clear policy page.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <nav aria-label="Footer">
+      <ul>
+        <li><a href="#privacy">Privacy</a></li>
+        <li><a href="#features">About</a></li>
+        <li><a href="#" rel="nofollow noopener">Docs</a></li>
+      </ul>
+    </nav>
+    <p class="fineprint">This site is not affiliated with or endorsed by Google. Do not use Google trademarks or logos.</p>
+  </footer>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
